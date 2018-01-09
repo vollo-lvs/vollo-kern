@@ -1,5 +1,7 @@
 package nl.vollo.kern.api;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
 
@@ -16,12 +18,14 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 /**
  * 
  */
+@Api(value = "Leerling")
 @Stateless
 @Path("/leerling")
 public class LeerlingEndpoint {
 	@PersistenceContext(unitName = "vollo-kern-persistence-unit")
 	private EntityManager em;
 
+	@ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data")
 	@GET
     @Path("/sample")
     @Produces("application/json")
