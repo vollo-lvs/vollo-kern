@@ -3,9 +3,11 @@ package nl.vollo.kern.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "leerlingen")
+@XmlRootElement
 public class Leerling implements Serializable {
 
 	private static final long serialVersionUID = 1L;
