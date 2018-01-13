@@ -1,9 +1,10 @@
 package nl.vollo.kern.model;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @Entity
 @Table(name = "leerlingen")
@@ -40,6 +41,10 @@ public class Leerling implements Serializable {
 
 	@Embedded
 	private Adres adres;
+
+	@OneToMany(mappedBy = "leerling", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
+    @OrderBy("datumInschrijving")
+	private List<Inschrijving> inschrijvingen;
 
 	public Long getId() {
 		return this.id;
@@ -138,7 +143,15 @@ public class Leerling implements Serializable {
 		this.adres = adres;
 	}
 
-	@Override
+    public List<Inschrijving> getInschrijvingen() {
+        return inschrijvingen;
+    }
+
+    public void setInschrijvingen(List<Inschrijving> inschrijvingen) {
+        this.inschrijvingen = inschrijvingen;
+    }
+
+    @Override
 	public String toString() {
 		String result = getClass().getSimpleName() + " ";
 		if (voornamen != null && !voornamen.trim().isEmpty())

@@ -4,6 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import java.util.Date;
 import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -32,7 +35,9 @@ public class LeerlingEndpoint {
     public Response sampleLeerling() {
         Leerling leerling = new Leerling();
         leerling.setAchternaam(randomAlphabetic(40));
+        leerling.setVoornamen(randomAlphabetic(40));
         leerling.setRoepnaam(randomAlphabetic(20));
+        leerling.setGeboortedatum(DateUtils.addDays(new Date(), -RandomUtils.nextInt(365 * 6, 365 * 12)));
         if (Math.random() > .67) {
             leerling.setGeslacht(Geslacht.MAN);
         } else if (Math.random() > .5) {
