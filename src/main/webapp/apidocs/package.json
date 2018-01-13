@@ -1,0 +1,114 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "swagger-ui-dist",
+        "scope": null,
+        "escapedName": "swagger-ui-dist",
+        "name": "swagger-ui-dist",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/danny/Projecten/vollos/temp"
+    ]
+  ],
+  "_from": "swagger-ui-dist@latest",
+  "_id": "swagger-ui-dist@3.9.1",
+  "_inCache": true,
+  "_location": "/swagger-ui-dist",
+  "_nodeVersion": "6.9.5",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/swagger-ui-dist-3.9.1.tgz_1515829182817_0.3965960394125432"
+  },
+  "_npmUser": {
+    "name": "swagger",
+    "email": "apiteam@swagger.io"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "swagger-ui-dist",
+    "scope": null,
+    "escapedName": "swagger-ui-dist",
+    "name": "swagger-ui-dist",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.9.1.tgz",
+  "_shasum": "ccb8ed5631c963c4388c2805c42834b7af6ef9ea",
+  "_shrinkwrap": null,
+  "_spec": "swagger-ui-dist",
+  "_where": "/Users/danny/Projecten/vollos/temp",
+  "bugs": {
+    "url": "https://github.com/swagger-api/swagger-ui/issues"
+  },
+  "contributors": [
+    {
+      "url": "in alphabetical order"
+    },
+    {
+      "name": "Anna Bodnia",
+      "email": "anna.bodnia@gmail.com"
+    },
+    {
+      "name": "Buu Nguyen",
+      "email": "buunguyen@gmail.com"
+    },
+    {
+      "name": "Josh Ponelat",
+      "email": "jponelat@gmail.com"
+    },
+    {
+      "name": "Kyle Shockey",
+      "email": "kyleshockey1@gmail.com"
+    },
+    {
+      "name": "Robert Barnwell",
+      "email": "robert@robertismy.name"
+    },
+    {
+      "name": "Sahar Jafari",
+      "email": "shr.jafari@gmail.com"
+    }
+  ],
+  "dependencies": {},
+  "description": "[![NPM version](https://badge.fury.io/js/swagger-ui-dist.svg)](http://badge.fury.io/js/swagger-ui-dist)",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "ccb8ed5631c963c4388c2805c42834b7af6ef9ea",
+    "tarball": "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.9.1.tgz"
+  },
+  "homepage": "https://github.com/swagger-api/swagger-ui#readme",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "kyleshockey",
+      "email": "kyle.shockey1@gmail.com"
+    },
+    {
+      "name": "swagger",
+      "email": "apiteam@swagger.io"
+    },
+    {
+      "name": "swagger-api",
+      "email": "apiteam@swagger.io"
+    }
+  ],
+  "name": "swagger-ui-dist",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/swagger-api/swagger-ui.git"
+  },
+  "scripts": {},
+  "version": "3.9.1"
+}
