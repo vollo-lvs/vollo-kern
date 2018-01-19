@@ -6,16 +6,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
-@Table(name = "groepen")
+@Table(name = "medewerkers")
+@XmlRootElement
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
-public class Groep implements Serializable {
+public class Medewerker implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,10 +29,13 @@ public class Groep implements Serializable {
 	@Column(name = "version")
 	private int version;
 
-	@Column
-    private String naam;
+	@Column(nullable = false)
+	private String voornaam;
 
-    @OneToMany(mappedBy = "groep", targetEntity = GroepLeerling.class, fetch = FetchType.LAZY)
-    private List<GroepLeerling> groepLeerlingen;
+	@Column
+	private String tussenvoegsel;
+
+	@Column(nullable = false)
+	private String achternaam;
 
 }
