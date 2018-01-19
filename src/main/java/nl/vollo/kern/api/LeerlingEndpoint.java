@@ -2,6 +2,7 @@ package nl.vollo.kern.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
 import org.apache.commons.lang3.RandomUtils;
@@ -24,8 +25,9 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Api(value = "Leerling")
 @Stateless
 @Path("/leerling")
+@Log4j2
 public class LeerlingEndpoint {
-	@PersistenceContext(unitName = "vollo-kern-persistence-unit")
+    @PersistenceContext(unitName = "vollo-kern-persistence-unit")
 	private EntityManager em;
 
 	@ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data")
@@ -46,6 +48,7 @@ public class LeerlingEndpoint {
             leerling.setGeslacht(Geslacht.OVERIG);
         }
         em.persist(leerling);
+        log.info("Leerling aangemaakt: {}", leerling);
         return Response.ok(leerling).build();
     }
 
