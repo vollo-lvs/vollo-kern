@@ -1,5 +1,6 @@
 package nl.vollo.kern.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,8 @@ public class Leerling implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
+    @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
@@ -53,6 +55,7 @@ public class Leerling implements Serializable {
 	@Embedded
 	private Adres adres;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "leerling", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
     @OrderBy("datumInschrijving")
 	private List<Inschrijving> inschrijvingen;

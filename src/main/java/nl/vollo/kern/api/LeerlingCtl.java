@@ -19,18 +19,16 @@ import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
-/**
- * 
- */
 @Api(value = "Leerling")
 @Stateless
 @Path("/leerling")
 @Log4j2
-public class LeerlingEndpoint {
+public class LeerlingCtl {
+
     @PersistenceContext(unitName = "vollo-kern-persistence-unit")
 	private EntityManager em;
 
-	@ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data")
+	@ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data.")
 	@GET
     @Path("/sample")
     @Produces("application/json")
@@ -57,7 +55,7 @@ public class LeerlingEndpoint {
 	public Response create(Leerling entity) {
 		em.persist(entity);
 		return Response.created(
-				UriBuilder.fromResource(LeerlingEndpoint.class)
+				UriBuilder.fromResource(LeerlingCtl.class)
 						.path(String.valueOf(entity.getId())).build()).build();
 	}
 

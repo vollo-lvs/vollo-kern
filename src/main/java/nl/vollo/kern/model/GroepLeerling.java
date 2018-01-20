@@ -20,7 +20,8 @@ public class GroepLeerling implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
+    @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
@@ -29,11 +30,11 @@ public class GroepLeerling implements Serializable {
 	private int version;
 
     @ManyToOne(targetEntity = Groep.class)
-    @JoinColumn(name = "groep_id")
+    @JoinColumn(name = "groep_id", foreignKey = @ForeignKey(name = "gll_grp_fk"))
     private Groep groep;
 
     @ManyToOne(targetEntity = Leerling.class)
-    @JoinColumn(name = "leerling_id")
+    @JoinColumn(name = "leerling_id", foreignKey = @ForeignKey(name = "gll_llg_fk"))
     private Leerling leerling;
 
     @Column(name = "datum_begin", nullable = false)

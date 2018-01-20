@@ -20,7 +20,8 @@ public class Inschrijving implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
+    @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
@@ -29,7 +30,7 @@ public class Inschrijving implements Serializable {
 	private int version;
 
 	@ManyToOne(targetEntity = Leerling.class)
-    @JoinColumn(name = "leerling_id")
+    @JoinColumn(name = "leerling_id", foreignKey = @ForeignKey(name = "ins_llg_fk"))
 	private Leerling leerling;
 
 	@Column(name = "datum_inschrijving", nullable = false)
