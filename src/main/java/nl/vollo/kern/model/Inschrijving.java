@@ -41,4 +41,8 @@ public class Inschrijving implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date datumUitschrijving;
 
+	@ManyToOne(targetEntity = School.class)
+	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "ins_scl_fk"), nullable = false)
+	private School school;
+
 }

@@ -1,11 +1,15 @@
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 1');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 2');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 3');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 4');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 5');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 6');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 7');
-insert into groepen (id, version, naam) values (nextval('vollo_seq'), 0, 'Groep 8');
+insert into scholen (id, version, naam, hoort_bij_school_id) values (1, 0, 'osg Hoofdschool', null);
+insert into scholen (id, version, naam, hoort_bij_school_id) values (2, 0, 'osg Subschool', 1);
+insert into scholen (id, version, naam, hoort_bij_school_id) values (3, 0, 'osg Onderschool', 1);
+
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 1', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 2', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 3', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 4', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 5', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 6', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 7', 2);
+insert into groepen (id, version, naam, school_id) values (nextval('vollo_seq'), 0, 'Groep 8', 2);
 
 insert into leerlingen (id, version, voornamen, roepnaam, achternaam, geboortedatum) values (nextval('vollo_seq'), 0, 'a', 'a', 'a', now());
 insert into leerlingen (id, version, voornamen, roepnaam, achternaam, geboortedatum) values (nextval('vollo_seq'), 0, 'b', 'b', 'b', now());

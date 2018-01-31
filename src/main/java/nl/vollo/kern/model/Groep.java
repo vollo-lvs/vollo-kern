@@ -40,4 +40,9 @@ public class Groep implements Serializable {
 	@JsonIgnore
     @OneToMany(mappedBy = "groep", targetEntity = GroepMedewerker.class, fetch = FetchType.LAZY)
     private List<GroepMedewerker> groepMedewerkers;
+
+	@ManyToOne(targetEntity = School.class)
+	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "grp_scl_fk"), nullable = false)
+	private School school;
+
 }
