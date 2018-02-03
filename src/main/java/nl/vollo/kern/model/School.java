@@ -8,7 +8,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -17,8 +16,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class School implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class School extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,4 +53,7 @@ public class School implements Serializable {
 	@OneToMany(mappedBy = "school", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
 	private List<Inschrijving> inschrijvingen;
 
+	public School() {
+		super(DomainEntity.school);
+	}
 }

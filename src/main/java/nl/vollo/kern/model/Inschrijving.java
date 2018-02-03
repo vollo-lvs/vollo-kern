@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -14,8 +13,8 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class Inschrijving implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Inschrijving extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,4 +44,7 @@ public class Inschrijving implements Serializable {
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "ins_scl_fk"), nullable = false)
 	private School school;
 
+	public Inschrijving() {
+		super(DomainEntity.inschrijving);
+	}
 }

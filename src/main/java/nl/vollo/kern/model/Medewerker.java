@@ -7,7 +7,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "medewerkers")
@@ -15,8 +14,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class Medewerker implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Medewerker extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,4 +38,7 @@ public class Medewerker implements Serializable {
 	@Column(nullable = false)
 	private String achternaam;
 
+	public Medewerker() {
+		super(DomainEntity.medewerker);
+	}
 }

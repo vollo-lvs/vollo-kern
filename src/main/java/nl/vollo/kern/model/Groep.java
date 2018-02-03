@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -15,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class Groep implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Groep extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,4 +44,7 @@ public class Groep implements Serializable {
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "grp_scl_fk"), nullable = false)
 	private School school;
 
+	public Groep() {
+		super(DomainEntity.groep);
+	}
 }

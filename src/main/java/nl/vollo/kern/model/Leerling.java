@@ -7,8 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +18,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class Leerling implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Leerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,19 +34,23 @@ public class Leerling implements Serializable {
 	private int version;
 
 	@Column(nullable = false)
+	@NotNull
 	private String voornamen;
 
 	@Column(nullable = false)
+	@NotNull
 	private String roepnaam;
 
 	@Column
 	private String tussenvoegsel;
 
 	@Column(nullable = false)
+	@NotNull
 	private String achternaam;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
+	@NotNull
 	private Date geboortedatum;
 
 	@Enumerated(EnumType.STRING)
@@ -60,4 +64,7 @@ public class Leerling implements Serializable {
     @OrderBy("datumInschrijving")
 	private List<Inschrijving> inschrijvingen;
 
+	public Leerling() {
+		super(DomainEntity.leerling);
+	}
 }

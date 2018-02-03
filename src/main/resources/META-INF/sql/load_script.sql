@@ -17,6 +17,8 @@ insert into leerlingen (id, version, voornamen, roepnaam, achternaam, geboorteda
 
 insert into groep_leerlingen (id, version, datum_begin, groep_id, leerling_id) select nextval('vollo_seq'), 0, now(), grp.id, llg.id from groepen grp, leerlingen llg;
 
+insert into inschrijvingen (id, version, datum_inschrijving, leerling_id, school_id) select nextval('vollo_seq'), 0, '2017-09-01', id, 2 from leerlingen;
+
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'k', 'k');
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'l', 'l');
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'm', 'm');

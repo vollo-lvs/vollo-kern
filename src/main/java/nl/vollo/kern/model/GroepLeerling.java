@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -14,8 +13,8 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class GroepLeerling implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class GroepLeerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,4 +44,7 @@ public class GroepLeerling implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date datumEinde;
 
+    public GroepLeerling() {
+        super(DomainEntity.groepLeerling);
+    }
 }
