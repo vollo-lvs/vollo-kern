@@ -14,6 +14,8 @@ public enum DomainEntity {
     inschrijving(Inschrijving.class),
     leerling(Leerling.class),
     medewerker(Medewerker.class),
+    ouder(Ouder.class),
+    ouderLeerling(OuderLeerling.class),
     school(School.class);
 
     static {
