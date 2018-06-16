@@ -7,6 +7,7 @@ import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
@@ -21,7 +22,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @Api(value = "Leerling")
 @Stateless
-@Path("/leerling")
+@RestController("/leerling")
 @Log4j2
 public class LeerlingCtl {
 
