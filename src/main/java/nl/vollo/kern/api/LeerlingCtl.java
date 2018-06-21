@@ -5,35 +5,36 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
+import nl.vollo.kern.repository.LeerlingRepository;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.ejb.Stateless;
-import javax.persistence.*;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import java.util.Date;
 import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @Api(value = "Leerling")
-@Stateless
-@RestController("/leerling")
+@RestController()
+@RequestMapping("/leerling")
 @Log4j2
 public class LeerlingCtl {
 
-    @PersistenceContext(unitName = "vollo-kern-persistence-unit")
-	private EntityManager em;
+    @Autowired
+    LeerlingRepository leerlingRepository;
 
-	@ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data.")
-	@GET
-    @Path("/sample")
-    @Produces("application/json")
-    public Response sampleLeerling() {
+    @GetMapping(produces = "application/json")
+    public List<Leerling> listAll() {
+        return leerlingRepository.findAll();
+    }
+
+    @ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data.")
+    @GetMapping(value = "/sample", produces = "application/json")
+    public ResponseEntity<Leerling> sampleLeerling() {
         Leerling leerling = new Leerling();
         leerling.setAchternaam(randomAlphabetic(40));
         leerling.setVoornamen(randomAlphabetic(40));
@@ -46,92 +47,50 @@ public class LeerlingCtl {
         } else {
             leerling.setGeslacht(Geslacht.OVERIG);
         }
-        em.persist(leerling);
+        leerling = leerlingRepository.save(leerling);
         log.info("Leerling aangemaakt: {}", leerling);
-        return Response.ok(leerling).build();
+        return new ResponseEntity<>(leerling, HttpStatus.OK);
     }
 
-	@POST
-	@Consumes("application/json")
-	public Response create(Leerling entity) {
-		em.persist(entity);
-		return Response.created(
-				UriBuilder.fromResource(LeerlingCtl.class)
-						.path(String.valueOf(entity.getId())).build()).build();
-	}
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<Leerling> create(Leerling entity) {
+        entity = leerlingRepository.save(entity);
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
+    }
 
-	@DELETE
-	@Path("/{id:[0-9][0-9]*}")
-	public Response deleteById(@PathParam("id") Long id) {
-		Leerling entity = em.find(Leerling.class, id);
-		if (entity == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		em.remove(entity);
-		return Response.noContent().build();
-	}
+    @DeleteMapping(value = "/{id:[0-9][0-9]*}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+        return leerlingRepository
+                .findById(id)
+                .map(leerling -> {
+                    leerlingRepository.deleteById(id);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	@GET
-	@Path("/{id:[0-9][0-9]*}")
-	@Produces("application/json")
-	public Response findById(@PathParam("id") Long id) {
-		TypedQuery<Leerling> findByIdQuery = em
-				.createQuery(
-						"SELECT DISTINCT l FROM Leerling l WHERE l.id = :entityId ORDER BY l.id",
-						Leerling.class);
-		findByIdQuery.setParameter("entityId", id);
-		Leerling entity;
-		try {
-			entity = findByIdQuery.getSingleResult();
-		} catch (NoResultException nre) {
-			entity = null;
-		}
-		if (entity == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		return Response.ok(entity).build();
-	}
+    @GetMapping(value = "/{id:[0-9][0-9]*}", produces = "application/json")
+    public ResponseEntity<Leerling> findById(@PathVariable("id") Long id) {
+        return leerlingRepository
+                .findById(id)
+                .map(leerling -> new ResponseEntity<>(leerling, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	@GET
-	@Produces("application/json")
-	public List<Leerling> listAll(@QueryParam("start") Integer startPosition,
-			@QueryParam("max") Integer maxResult) {
-		TypedQuery<Leerling> findAllQuery = em.createQuery(
-				"SELECT DISTINCT l FROM Leerling l ORDER BY l.id",
-				Leerling.class);
-		if (startPosition != null) {
-			findAllQuery.setFirstResult(startPosition);
-		}
-		if (maxResult != null) {
-			findAllQuery.setMaxResults(maxResult);
-		}
-		final List<Leerling> results = findAllQuery.getResultList();
-		return results;
-	}
-
-	@PUT
-	@Path("/{id:[0-9][0-9]*}")
-	@Consumes("application/json")
-	public Response update(@PathParam("id") Long id, Leerling entity) {
-		if (entity == null) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		if (id == null) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		if (!id.equals(entity.getId())) {
-			return Response.status(Status.CONFLICT).entity(entity).build();
-		}
-		if (em.find(Leerling.class, id) == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		try {
-			entity = em.merge(entity);
-		} catch (OptimisticLockException e) {
-			return Response.status(Response.Status.CONFLICT)
-					.entity(e.getEntity()).build();
-		}
-
-		return Response.noContent().build();
-	}
+    @PutMapping(value = "/{id:[0-9][0-9]*}", consumes = "application/json")
+    public ResponseEntity<?> update(@PathVariable("id") Long id, final Leerling entity) {
+        if (entity == null || id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (!id.equals(entity.getId())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        return leerlingRepository
+                .findById(id)
+                .map(entity1 -> {
+                    leerlingRepository.save(entity);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
