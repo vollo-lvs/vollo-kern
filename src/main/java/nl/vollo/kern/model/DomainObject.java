@@ -15,6 +15,7 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = School.class, name = "school"),
         @JsonSubTypes.Type(value = Medewerker.class, name = "medewerker"),
         @JsonSubTypes.Type(value = Inschrijving.class, name = "inschrijving"),
+        @JsonSubTypes.Type(value = Gebruiker.class, name = "gebruiker")
 })
 public abstract class DomainObject implements Serializable {
     @JsonProperty
