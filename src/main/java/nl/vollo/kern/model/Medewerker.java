@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.medewerker)
 public class Medewerker extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -37,8 +39,4 @@ public class Medewerker extends DomainObject {
 
 	@Column(nullable = false)
 	private String achternaam;
-
-	public Medewerker() {
-		super(DomainEntity.medewerker);
-	}
 }

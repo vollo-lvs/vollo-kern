@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.ouderLeerling)
 public class OuderLeerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -34,8 +36,4 @@ public class OuderLeerling extends DomainObject {
     @ManyToOne(targetEntity = Leerling.class)
     @JoinColumn(name = "leerling_id", foreignKey = @ForeignKey(name = "oll_llg_fk"))
     private Leerling leerling;
-
-    public OuderLeerling() {
-        super(DomainEntity.ouderLeerling);
-    }
 }

@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.groepLeerling)
 public class GroepLeerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -43,8 +45,4 @@ public class GroepLeerling extends DomainObject {
     @Column(name = "datum_einde")
     @Temporal(TemporalType.DATE)
     private Date datumEinde;
-
-    public GroepLeerling() {
-        super(DomainEntity.groepLeerling);
-    }
 }

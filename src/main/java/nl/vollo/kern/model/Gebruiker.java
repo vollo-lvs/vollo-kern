@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.gebruiker)
 public class Gebruiker extends DomainObject implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -57,10 +59,6 @@ public class Gebruiker extends DomainObject implements UserDetails {
     @ManyToOne(targetEntity = Ouder.class)
     @JoinColumn(name = "ouder_id", foreignKey = @ForeignKey(name = "geb_oud_fk"))
     private Ouder ouder;
-
-    public Gebruiker() {
-        super(DomainEntity.gebruiker);
-    }
 
     @JsonIgnore
     @Override

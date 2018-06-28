@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.inschrijving)
 public class Inschrijving extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -43,8 +45,4 @@ public class Inschrijving extends DomainObject {
 	@ManyToOne(targetEntity = School.class)
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "ins_scl_fk"), nullable = false)
 	private School school;
-
-	public Inschrijving() {
-		super(DomainEntity.inschrijving);
-	}
 }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.leerling)
 public class Leerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -63,8 +65,4 @@ public class Leerling extends DomainObject {
 	@OneToMany(mappedBy = "leerling", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
     @OrderBy("datumInschrijving")
 	private List<Inschrijving> inschrijvingen;
-
-	public Leerling() {
-		super(DomainEntity.leerling);
-	}
 }

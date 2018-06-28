@@ -3,6 +3,8 @@ package nl.vollo.kern.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.extern.log4j.Log4j2;
+import nl.vollo.kern.annotation.DomainType;
 
 import java.io.Serializable;
 
@@ -17,12 +19,15 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = Inschrijving.class, name = "inschrijving"),
         @JsonSubTypes.Type(value = Gebruiker.class, name = "gebruiker")
 })
+@Log4j2
 public abstract class DomainObject implements Serializable {
     @JsonProperty
     private DomainEntity _type;
 
-    DomainObject(DomainEntity domainEntity) {
-        this._type = domainEntity;
+    DomainObject() {
+        assert this.getClass().isAnnotationPresent(DomainType.class) : "DomainObject moet annotatie DomainType hebben";
+
+        this._type = this.getClass().getAnnotation(DomainType.class).value();
     }
 
     public abstract Long getId();

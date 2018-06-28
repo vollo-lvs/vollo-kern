@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@DomainType(DomainEntity.groep)
 public class Groep extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
@@ -43,8 +45,4 @@ public class Groep extends DomainObject {
 	@ManyToOne(targetEntity = School.class)
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "grp_scl_fk"), nullable = false)
 	private School school;
-
-	public Groep() {
-		super(DomainEntity.groep);
-	}
 }
