@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class Gebruiker extends DomainObject implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +49,14 @@ public class Gebruiker extends DomainObject implements UserDetails {
 
     @Column
     private String rollen;
+
+    @ManyToOne(targetEntity = Medewerker.class)
+    @JoinColumn(name = "medewerker_id", foreignKey = @ForeignKey(name = "geb_mdw_fk"))
+    private Medewerker medewerker;
+
+    @ManyToOne(targetEntity = Ouder.class)
+    @JoinColumn(name = "ouder_id", foreignKey = @ForeignKey(name = "geb_oud_fk"))
+    private Ouder ouder;
 
     public Gebruiker() {
         super(DomainEntity.gebruiker);

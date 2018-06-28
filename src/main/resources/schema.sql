@@ -24,3 +24,5 @@ insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vol
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'm', 'm');
 
 insert into groep_medewerkers (id, version, datum_begin, groep_id, medewerker_id) select nextval('vollo_seq'), 0, now(), grp.id, mdw.id from groepen grp, medewerkers mdw;
+
+insert into gebruikers (id, gebruikersnaam, version, wachtwoord, medewerker_id, ouder_id, rollen) select nextval('vollo_seq'), achternaam, 0, achternaam, id, null, 'ROLE_GEBRUIKER' from medewerkers;
