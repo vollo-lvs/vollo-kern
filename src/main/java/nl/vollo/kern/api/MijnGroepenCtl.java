@@ -31,7 +31,7 @@ public class MijnGroepenCtl {
 
     @ApiOperation(value = "Haal de groepen van de ingelogde medewerker op.")
     @GetMapping(produces = "application/json")
-    @PreAuthorize("isFullyAuthenticated() AND hasRole('GEBRUIKER')")
+    @PreAuthorize("hasRole('GEBRUIKER')")
     public List<Groep> getMijnGroepen(Principal principal) {
         System.out.println(principal.getName());
         SecurityContext context = SecurityContextHolder.getContext();
@@ -42,7 +42,7 @@ public class MijnGroepenCtl {
     @ApiOperation(value = "Haal de leerlingen van een groep van de ingelogde medewerker op.")
     @GetMapping(value = "/{id}/leerlingen", produces = "application/json")
     @Produces("application/json")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('GEBRUIKER')")
     public List<Leerling> getGroepLeerlingen(
             @ApiParam("ID van een groep")
             @PathVariable("id") Long id) {
