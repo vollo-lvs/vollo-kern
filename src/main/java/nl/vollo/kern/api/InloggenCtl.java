@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -34,12 +37,36 @@ final class InloggenCtl {
 
     @ApiOperation(value = "Inloggen.")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseEntity<InloggenResponse> inloggen(@RequestBody @Valid InloggenRequest data) {
+    ResponseEntity<Void> inloggen(@RequestBody @Valid InloggenRequest data, HttpServletRequest request, HttpServletResponse response) {
         return authentication
                 .login(data.getGebruikersnaam(), data.getWachtwoord())
                 .map(InloggenResponse::new)
-                .map(token -> new ResponseEntity<>(token, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(errorHeader("Invalid login and/or password"), HttpStatus.UNAUTHORIZED));
+                .map(token -> {
+                    response.addCookie(nieuweCookie(request, token.getToken()));
+                    return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+                })
+                .orElseGet(() -> {
+                    response.addCookie(verwijderCookie(request));
+                    return new ResponseEntity<>(errorHeader("Invalid login and/or password"), HttpStatus.UNAUTHORIZED);
+                });
+    }
+
+    Cookie nieuweCookie(HttpServletRequest request, String token) {
+        Cookie cookie = new Cookie("vollo_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(request.isSecure());
+        cookie.setPath("/");
+        cookie.setMaxAge(-1);
+        return cookie;
+    }
+
+    Cookie verwijderCookie(HttpServletRequest request) {
+        Cookie cookie = new Cookie("vollo_token", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(request.isSecure());
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        return cookie;
     }
 
     @Getter

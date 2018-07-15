@@ -9,9 +9,11 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 import static java.util.Optional.ofNullable;
@@ -30,16 +32,27 @@ final class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFi
     public Authentication attemptAuthentication(
             final HttpServletRequest request,
             final HttpServletResponse response) {
-        final String param = ofNullable(request.getHeader(AUTHORIZATION))
-                .orElse(request.getParameter("t"));
+        final String param = getVolloCookie(request)
+                // TODO weg uit productiecode:
+                .orElse(request.getParameter("auth"));
 
         final String token = ofNullable(param)
-                .map(value -> removeStart(value, BEARER))
                 .map(String::trim)
                 .orElseThrow(() -> new BadCredentialsException("Missing Authentication Token"));
 
         final Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
         return getAuthenticationManager().authenticate(auth);
+    }
+
+    Optional<String> getVolloCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("vollo_token".equals(cookie.getName())) {
+                    return ofNullable(cookie.getValue());
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
