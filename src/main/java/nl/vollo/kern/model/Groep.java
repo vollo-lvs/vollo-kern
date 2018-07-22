@@ -8,6 +8,9 @@ import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import java.util.List;
 
 @Entity
@@ -32,7 +35,12 @@ public class Groep extends DomainObject {
 	private int version;
 
 	@Column
-    private String naam;
+	private String naam;
+
+	@Column
+	@Min(1L)
+	@Max(8L)
+	private int niveau;
 
 	@JsonIgnore
     @OneToMany(mappedBy = "groep", targetEntity = GroepLeerling.class, fetch = FetchType.LAZY)

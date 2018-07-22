@@ -13,6 +13,7 @@ public interface GroepRepository extends JpaRepository<Groep, Long> {
     @Query("select l from Leerling l " +
             "where l in (" +
             "  select gl.leerling from GroepLeerling gl " +
-            "  where gl.groep.id = :groepId)")
+            "  where gl.groep.id = :groepId) " +
+            "order by l.achternaam, l.roepnaam")
     List<Leerling> getGroepLeerlingen(@Param("groepId") Long id);
 }

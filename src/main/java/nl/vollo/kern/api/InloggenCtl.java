@@ -38,6 +38,7 @@ final class InloggenCtl {
     @ApiOperation(value = "Inloggen.")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseEntity<Void> inloggen(@RequestBody @Valid InloggenRequest data, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("un="+data.getGebruikersnaam()+", ww=" + data.getWachtwoord());
         return authentication
                 .login(data.getGebruikersnaam(), data.getWachtwoord())
                 .map(InloggenResponse::new)
@@ -72,10 +73,8 @@ final class InloggenCtl {
     @Getter
     @Setter
     static class InloggenRequest {
-        @NotBlank
         private String gebruikersnaam;
 
-        @NotBlank
         private String wachtwoord;
     }
 
