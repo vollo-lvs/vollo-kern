@@ -17,7 +17,9 @@ public enum DomainEntity {
     medewerker(Medewerker.class),
     ouder(Ouder.class),
     ouderLeerling(OuderLeerling.class),
-    school(School.class);
+    school(School.class),
+    score(Score.class),
+    toets(Toets.class);
 
     static {
         leerling.setAllowedEntities(DomainEntity.groepLeerling, DomainEntity.inschrijving)

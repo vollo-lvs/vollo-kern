@@ -17,6 +17,10 @@ insert into groep_leerlingen (id, version, datum_begin, groep_id, leerling_id) s
 
 insert into inschrijvingen (id, version, datum_inschrijving, leerling_id, school_id) select nextval('vollo_seq'), 0, '2017-09-01', id, 2 from leerlingen;
 
+insert into toetsen (id, version, datum, soort, soort_score, omschrijving) values (nextval('vollo_seq'), 0, now(), 'Dictee', 'CIJFER_1_10', 'Eindejaars dictee');
+
+insert into scores (id, version, leerling_id, toets_id, cijfer_score) select nextval('vollo_seq'), 0, llg.id, tts.id, random() * 10 from leerlingen llg, toetsen tts where right(achternaam, 1) = '3';
+
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'k', 'k');
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'l', 'l');
 insert into medewerkers (id, version, voornaam, achternaam) values (nextval('vollo_seq'), 0, 'm', 'm');
