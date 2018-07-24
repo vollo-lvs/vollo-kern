@@ -32,7 +32,9 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Api(value = "MijnGroepen")
@@ -73,12 +75,12 @@ public class MijnGroepenCtl {
     @Value
     public static class GroepView {
         private List<LeerlingView> leerlingen = new ArrayList<>();
-        private Map<Long, Toets> toetsen = new TreeMap<>();
+        private Set<Toets> toetsen = new TreeSet<>();
 
         void addLeerling(Leerling leerling, List<Score> scores) {
             LeerlingView leerlingView = new LeerlingView(leerling);
             scores.forEach(score -> {
-                toetsen.putIfAbsent(score.getToets().getId(), score.getToets());
+                toetsen.add(score.getToets());
                 leerlingView.addScore(score);
             });
             leerlingen.add(leerlingView);

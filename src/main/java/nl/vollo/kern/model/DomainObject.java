@@ -20,7 +20,9 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = Gebruiker.class, name = "gebruiker")
 })
 @Log4j2
-public abstract class DomainObject implements Serializable {
+public abstract class DomainObject implements Serializable, Comparable<DomainObject> {
+    static final long serialVersionUID = -1L;
+
     @JsonProperty
     private DomainEntity _type;
 
@@ -35,4 +37,8 @@ public abstract class DomainObject implements Serializable {
     public abstract int getVersion();
 
     public abstract void setVersion(int version);
+
+    public int compareTo(DomainObject other) {
+        return getId().compareTo(other.getId());
+    }
 }
