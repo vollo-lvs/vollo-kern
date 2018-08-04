@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,11 +45,11 @@ public class Groep extends DomainObject {
 
 	@JsonIgnore
     @OneToMany(mappedBy = "groep", targetEntity = GroepLeerling.class, fetch = FetchType.LAZY)
-    private List<GroepLeerling> groepLeerlingen;
+    private List<GroepLeerling> groepLeerlingen = new ArrayList<>();
 
 	@JsonIgnore
     @OneToMany(mappedBy = "groep", targetEntity = GroepMedewerker.class, fetch = FetchType.LAZY)
-    private List<GroepMedewerker> groepMedewerkers;
+    private List<GroepMedewerker> groepMedewerkers = new ArrayList<>();
 
 	@ManyToOne(targetEntity = School.class)
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "grp_scl_fk"), nullable = false)

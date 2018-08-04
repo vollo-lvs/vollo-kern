@@ -9,6 +9,8 @@ import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,13 +47,13 @@ public class School extends DomainObject {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "hoortBij", targetEntity = School.class, fetch = FetchType.LAZY)
-	private List<School> bijbehorendeScholen;
+	private List<School> bijbehorendeScholen = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "school", targetEntity = Groep.class, fetch = FetchType.LAZY)
-	private List<Groep> groepen;
+	private List<Groep> groepen = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "school", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
-	private List<Inschrijving> inschrijvingen;
+	private List<Inschrijving> inschrijvingen = new ArrayList<>();
 }

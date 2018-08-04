@@ -17,21 +17,29 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Adres;
+import nl.vollo.kern.model.Gebruiker;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Groep;
 import nl.vollo.kern.model.GroepLeerling;
+import nl.vollo.kern.model.GroepMedewerker;
+import nl.vollo.kern.model.Inschrijving;
 import nl.vollo.kern.model.Leerling;
+import nl.vollo.kern.model.Medewerker;
 import nl.vollo.kern.model.School;
+import nl.vollo.kern.repository.GebruikerRepository;
 import nl.vollo.kern.repository.GroepLeerlingRepository;
+import nl.vollo.kern.repository.GroepMedewerkerRepository;
 import nl.vollo.kern.repository.GroepRepository;
+import nl.vollo.kern.repository.InschrijvingRepository;
 import nl.vollo.kern.repository.LeerlingRepository;
+import nl.vollo.kern.repository.MedewerkerRepository;
 import nl.vollo.kern.repository.SchoolRepository;
 
 @Component
 @Log4j2
 public class TestdataGenerator implements CommandLineRunner {
 
-    private long aantalScholen = 100L;
+    private long aantalScholen = 3L;
     private Date datumBeginSchooljaar = calcBeginSchooljaar();
 
     private Random random;
@@ -56,6 +64,18 @@ public class TestdataGenerator implements CommandLineRunner {
     @Autowired
     LeerlingRepository leerlingRepository;
 
+    @Autowired
+    InschrijvingRepository inschrijvingRepository;
+
+    @Autowired
+    MedewerkerRepository medewerkerRepository;
+
+    @Autowired
+    GebruikerRepository gebruikerRepository;
+
+    @Autowired
+    GroepMedewerkerRepository groepMedewerkerRepository;
+
 	@Override
 	public void run(String... args) throws Exception {
 		if (ArrayUtils.contains(args, "--genereer-testdata")) {
@@ -78,22 +98,28 @@ public class TestdataGenerator implements CommandLineRunner {
 
     private void genererenScholen(School hoortBij, long aantalScholen) {
         for (int i = 0; i < aantalScholen; i++) {
-            genererenSchool(hoortBij);
+            School school = genererenSchool(hoortBij);
+            if (hoortBij == null) {
+                Medewerker medewerker = genererenMedewerker(i);
+                koppelenMedewerkerAanSchool(medewerker, school);
+            }
         }
     }
 
-    private void genererenSchool(School hoortBij) {
+	private School genererenSchool(School hoortBij) {
         List<String> schoolPlaatsnamen = random(plaatsnamen, randomInt(1, 4));
         School s = new School();
         s.setNaam(random(schoolnamen));
         s.setAdres(randomAdres(schoolPlaatsnamen));
         s.setHoortBij(hoortBij);
         schoolRepository.save(s);
-        if (kans(0.1)) {
-            genererenScholen(s, randomInt(1, 5));
+        log.info("Gegenereerd school {}", s.getId());
+        if (kans(0.5)) {
+            genererenScholen(s, randomInt(1, 3));
         } else {
             genererenGroepen(s, schoolPlaatsnamen);
         }
+        return s;
     }
 
     private void genererenGroepen(School school, List<String> schoolPlaatsnamen) {
@@ -103,6 +129,8 @@ public class TestdataGenerator implements CommandLineRunner {
             g.setNiveau(i);
             g.setNaam(String.valueOf(i));
             groepRepository.save(g);
+            log.info("Gegenereerd groep {}", g.getId());
+            school.getGroepen().add(g);
             genererenGroepLeerlingen(g, schoolPlaatsnamen);
         }
     }
@@ -110,17 +138,38 @@ public class TestdataGenerator implements CommandLineRunner {
     private List<GroepLeerling> genererenGroepLeerlingen(Groep g, List<String> schoolPlaatsnamen) {
         List<GroepLeerling> groepLeerlingen = new ArrayList<>();
         for (int i = 0; i < randomInt(15, 32); i++) {
+            Leerling leerling = genererenLeerling(g, schoolPlaatsnamen);
             GroepLeerling gl = new GroepLeerling();
             gl.setGroep(g);
             gl.setDatumBegin(datumBeginSchooljaar);
-            gl.setLeerling(genererenLeerling(g, schoolPlaatsnamen));
+            gl.setLeerling(leerling);
             groepLeerlingRepository.save(gl);
-            // TODO leerlingen koppelen aan voorgaande groepen
+            g.getGroepLeerlingen().add(gl);
+            koppelLeerlingAanVoorgaandeGroepen(g, leerling);
         }
 		return groepLeerlingen;
     }
 
-    private Leerling genererenLeerling(Groep groep, List<String> schoolPlaatsnamen) {
+    private void koppelLeerlingAanVoorgaandeGroepen(Groep laatsteGroep, Leerling leerling) {
+        laatsteGroep.getSchool().getGroepen().stream()
+                .filter(groep -> groep.getNiveau() < laatsteGroep.getNiveau())
+                .map(groep -> {
+                    Date datumBegin = DateUtils.addYears(datumBeginSchooljaar, groep.getNiveau() - laatsteGroep.getNiveau());
+                    Date datumEinde = DateUtils.addDays(DateUtils.addYears(datumBegin, 1), -1);
+                    GroepLeerling gl = new GroepLeerling();
+                    gl.setGroep(groep);
+                    gl.setDatumBegin(datumBegin);
+                    gl.setDatumEinde(datumEinde);
+                    gl.setLeerling(leerling);
+                    return gl;
+                })
+                .forEach(gl -> {
+                    groepLeerlingRepository.save(gl);
+                    gl.getGroep().getGroepLeerlingen().add(gl);
+                });
+	}
+
+	private Leerling genererenLeerling(Groep groep, List<String> schoolPlaatsnamen) {
         Leerling l = new Leerling();
         l.setAchternaam(random(achternamen));
         l.setAdres(randomAdres(schoolPlaatsnamen));
@@ -138,8 +187,55 @@ public class TestdataGenerator implements CommandLineRunner {
             l.setTussenvoegsel(random(tussenvoegsels));
         }
         leerlingRepository.save(l);
+        log.info("Gegenereerd leerling {}", l.getId());
+        genererenInschrijving(l, groep.getSchool(), groep);
+        // TODO uitgeschreven leerlingen
         return l;
     }
+
+    private void genererenInschrijving(Leerling leerling, School school, Groep laatsteGroep) {
+        Date datum = DateUtils.addYears(datumBeginSchooljaar, 1 - laatsteGroep.getNiveau());
+        Inschrijving i = new Inschrijving();
+        i.setDatumInschrijving(datum);
+        i.setLeerling(leerling);
+        i.setSchool(school);
+        inschrijvingRepository.save(i);
+        leerling.getInschrijvingen().add(i);
+        school.getInschrijvingen().add(i);
+    }
+
+    private void koppelenMedewerkerAanSchool(Medewerker medewerker, School school) {
+        final Date d = new Date(0L);
+        school.getGroepen().stream()
+                .map(g -> {
+                    GroepMedewerker gm = new GroepMedewerker();
+                    gm.setGroep(g);
+                    gm.setMedewerker(medewerker);
+                    gm.setDatumBegin(d);
+                    return gm;
+                })
+                .forEach(gm -> {
+                    groepMedewerkerRepository.save(gm);
+                });
+        school.getBijbehorendeScholen().forEach(s -> koppelenMedewerkerAanSchool(medewerker, s));
+	}
+
+	private Medewerker genererenMedewerker(int i) {
+        Medewerker m = new Medewerker();
+        m.setVoornaam(random(kans(0.5) ? jongensnamen : meisjesnamen));
+        if (kans(0.2)) {
+            m.setTussenvoegsel(random(tussenvoegsels));
+        }
+        m.setAchternaam(random(achternamen));
+        medewerkerRepository.save(m);
+        Gebruiker g = new Gebruiker();
+        g.setGebruikersnaam("m" + i);
+        g.setWachtwoord("m" + i);
+        g.setMedewerker(m);
+        g.setRollen("ROLE_GEBRUIKER");
+        gebruikerRepository.save(g);
+		return m;
+	}
 
     private Date randomGeboortedatum(int niveau) {
         return DateUtils.addDays(

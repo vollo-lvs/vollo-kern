@@ -10,6 +10,8 @@ import nl.vollo.kern.annotation.DomainType;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,5 +66,5 @@ public class Leerling extends DomainObject {
 	@JsonIgnore
 	@OneToMany(mappedBy = "leerling", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
     @OrderBy("datumInschrijving")
-	private List<Inschrijving> inschrijvingen;
+	private List<Inschrijving> inschrijvingen = new ArrayList<>();
 }
