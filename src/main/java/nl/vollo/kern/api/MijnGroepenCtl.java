@@ -7,6 +7,7 @@ import lombok.Value;
 import lombok.experimental.Delegate;
 import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Adres;
+import nl.vollo.kern.model.Gebruiker;
 import nl.vollo.kern.model.Groep;
 import nl.vollo.kern.model.Inschrijving;
 import nl.vollo.kern.model.Leerling;
@@ -17,6 +18,7 @@ import nl.vollo.kern.repository.ScoreRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,11 +55,8 @@ public class MijnGroepenCtl {
     @ApiOperation(value = "Haal de groepen van de ingelogde medewerker op.")
     @GetMapping(produces = "application/json")
     @PreAuthorize("hasRole('GEBRUIKER')")
-    public List<Groep> getMijnGroepen(Principal principal) {
-        System.out.println(principal.getName());
-        SecurityContext context = SecurityContextHolder.getContext();
-        System.out.println(context.getAuthentication().getAuthorities());
-        return groepRepository.findAll();
+    public List<Groep> getMijnGroepen(@AuthenticationPrincipal final Gebruiker gebruiker) {
+        return groepRepository.findByMedewerker(gebruiker.getMedewerker(), new Date());
     }
 
     @ApiOperation(value = "Haal de leerlingen van een groep van de ingelogde medewerker op.")
@@ -65,7 +65,7 @@ public class MijnGroepenCtl {
     @PreAuthorize("hasRole('GEBRUIKER')")
     public GroepView getGroepLeerlingen(@ApiParam("ID van een groep") @PathVariable("id") Long id) {
         GroepView groepView = new GroepView();
-        groepRepository.getGroepLeerlingen(id).forEach(leerling -> {
+        groepRepository.getGroepLeerlingen(id, new Date()).forEach(leerling -> {
             List<Score> scores = scoreRepository.findAllByLeerling(leerling);
             groepView.addLeerling(leerling, scores);
         });

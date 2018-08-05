@@ -111,6 +111,7 @@ public class TestdataGenerator implements CommandLineRunner {
         for (int i = 0; i < aantalScholen; i++) {
             School school = genererenSchool(hoortBij);
             if (hoortBij == null) {
+                log.info("Bijbehorende scholen {}", school.getBijbehorendeScholen());
                 Medewerker medewerker = genererenMedewerker(i);
                 koppelenMedewerkerAanSchool(medewerker, school);
             }
@@ -125,6 +126,9 @@ public class TestdataGenerator implements CommandLineRunner {
         s.setHoortBij(hoortBij);
         schoolRepository.save(s);
         log.info("Gegenereerd school {}", s.getId());
+        if (hoortBij != null) {
+            hoortBij.getBijbehorendeScholen().add(s);
+        }
         if (hoortBij == null && kans(0.5)) {
             genererenScholen(s, 2);
         } else {
@@ -198,7 +202,6 @@ public class TestdataGenerator implements CommandLineRunner {
             l.setTussenvoegsel(random(tussenvoegsels));
         }
         leerlingRepository.save(l);
-        log.info("Gegenereerd leerling {}", l.getId());
         genererenInschrijving(l, groep.getSchool(), groep);
         // TODO uitgeschreven leerlingen
         return l;
@@ -226,6 +229,7 @@ public class TestdataGenerator implements CommandLineRunner {
                     return gm;
                 })
                 .forEach(gm -> {
+                    log.info("Koppel medewerker {} aan groep {}", gm.getMedewerker().getId(), gm.getGroep());
                     groepMedewerkerRepository.save(gm);
                 });
         school.getBijbehorendeScholen().forEach(s -> koppelenMedewerkerAanSchool(medewerker, s));
