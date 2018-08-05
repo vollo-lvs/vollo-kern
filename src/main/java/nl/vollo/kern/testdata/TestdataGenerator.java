@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -52,6 +56,9 @@ public class TestdataGenerator implements CommandLineRunner {
     List<String> jongensnamen;
     List<String> tussenvoegsels;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     SchoolRepository schoolRepository;
 
@@ -85,6 +92,10 @@ public class TestdataGenerator implements CommandLineRunner {
 	}
 
     public void genereren() {
+        try {
+            em.createNativeQuery("alter sequence vollo_seq restart").getResultList();
+        } catch (PersistenceException e) {}
+        truncateTables();
         random = new Random(1L);
         schoolnamen = inlezenTestdata("schoolnamen");
         straatnamen = inlezenTestdata("straatnamen");
@@ -114,8 +125,8 @@ public class TestdataGenerator implements CommandLineRunner {
         s.setHoortBij(hoortBij);
         schoolRepository.save(s);
         log.info("Gegenereerd school {}", s.getId());
-        if (kans(0.5)) {
-            genererenScholen(s, randomInt(1, 3));
+        if (hoortBij == null && kans(0.5)) {
+            genererenScholen(s, 2);
         } else {
             genererenGroepen(s, schoolPlaatsnamen);
         }
@@ -340,4 +351,16 @@ public class TestdataGenerator implements CommandLineRunner {
         }
         return d;
     }
+
+    private void truncateTables() {
+        groepLeerlingRepository.deleteAllInBatch();
+        groepMedewerkerRepository.deleteAllInBatch();
+        gebruikerRepository.deleteAllInBatch();
+        medewerkerRepository.deleteAllInBatch();
+        inschrijvingRepository.deleteAllInBatch();
+        leerlingRepository.deleteAllInBatch();
+        groepRepository.deleteAllInBatch();
+        schoolRepository.deleteAllInBatch();
+    }
+
 }
