@@ -8,8 +8,6 @@ import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "toetsen")
 @Getter
@@ -31,10 +29,9 @@ public class Toets extends DomainObject {
 	@Column(name = "version")
 	private int version;
 
-	@Column(name = "datum")
-    @Temporal(TemporalType.DATE)
-    private Date datum;
+	// TODO optioneel koppelen aan school
 
+	// TODO waarden?
 	@Column(name = "soort")
     private String soort;
 

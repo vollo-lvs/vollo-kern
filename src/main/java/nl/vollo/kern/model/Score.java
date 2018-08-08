@@ -7,9 +7,7 @@ import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
-
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Table(name = "scores")
@@ -36,13 +34,14 @@ public class Score extends DomainObject {
     @JoinColumn(name = "leerling_id", foreignKey = @ForeignKey(name = "sco_llg_fk"))
 	private Leerling leerling;
 
-	@ManyToOne(targetEntity = Toets.class)
-    @JoinColumn(name = "toets_id", foreignKey = @ForeignKey(name = "sco_tts_fk"))
-	private Toets toets;
+	@ManyToOne(targetEntity = Toetsafname.class)
+    @JoinColumn(name = "toetsafname_id", foreignKey = @ForeignKey(name = "sco_tan_fk"))
+	private Toetsafname toetsafname;
 
 	@Column(name = "letter_score")
     private String letterScore;
 
 	@Column(name = "cijfer_score")
-    private BigDecimal cijferScore;
+	private BigDecimal cijferScore;
+
 }

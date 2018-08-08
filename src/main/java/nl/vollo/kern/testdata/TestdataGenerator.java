@@ -1,17 +1,8 @@
 package nl.vollo.kern.testdata;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-
+import lombok.extern.log4j.Log4j2;
+import nl.vollo.kern.model.*;
+import nl.vollo.kern.repository.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,25 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.log4j.Log4j2;
-import nl.vollo.kern.model.Adres;
-import nl.vollo.kern.model.Gebruiker;
-import nl.vollo.kern.model.Geslacht;
-import nl.vollo.kern.model.Groep;
-import nl.vollo.kern.model.GroepLeerling;
-import nl.vollo.kern.model.GroepMedewerker;
-import nl.vollo.kern.model.Inschrijving;
-import nl.vollo.kern.model.Leerling;
-import nl.vollo.kern.model.Medewerker;
-import nl.vollo.kern.model.School;
-import nl.vollo.kern.repository.GebruikerRepository;
-import nl.vollo.kern.repository.GroepLeerlingRepository;
-import nl.vollo.kern.repository.GroepMedewerkerRepository;
-import nl.vollo.kern.repository.GroepRepository;
-import nl.vollo.kern.repository.InschrijvingRepository;
-import nl.vollo.kern.repository.LeerlingRepository;
-import nl.vollo.kern.repository.MedewerkerRepository;
-import nl.vollo.kern.repository.SchoolRepository;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Component
 @Log4j2
@@ -55,6 +34,8 @@ public class TestdataGenerator implements CommandLineRunner {
     List<String> meisjesnamen;
     List<String> jongensnamen;
     List<String> tussenvoegsels;
+
+    List<Toetsafname> toetsen;
 
     @PersistenceContext
     EntityManager em;
@@ -83,6 +64,15 @@ public class TestdataGenerator implements CommandLineRunner {
     @Autowired
     GroepMedewerkerRepository groepMedewerkerRepository;
 
+    @Autowired
+    ScoreRepository scoreRepository;
+
+    @Autowired
+    ToetsRepository toetsRepository;
+
+    @Autowired
+    ToetsafnameRepository toetsafnameRepository;
+
 	@Override
 	public void run(String... args) throws Exception {
 		if (ArrayUtils.contains(args, "--genereer-testdata")) {
@@ -97,6 +87,7 @@ public class TestdataGenerator implements CommandLineRunner {
         } catch (PersistenceException e) {}
         truncateTables();
         random = new Random(1L);
+        genererenToetsen();
         schoolnamen = inlezenTestdata("schoolnamen");
         straatnamen = inlezenTestdata("straatnamen");
         plaatsnamen = inlezenTestdata("plaatsnamen");
@@ -126,6 +117,7 @@ public class TestdataGenerator implements CommandLineRunner {
         s.setHoortBij(hoortBij);
         schoolRepository.save(s);
         log.info("Gegenereerd school {}", s.getId());
+
         if (hoortBij != null) {
             hoortBij.getBijbehorendeScholen().add(s);
         }
@@ -203,8 +195,54 @@ public class TestdataGenerator implements CommandLineRunner {
         }
         leerlingRepository.save(l);
         genererenInschrijving(l, groep.getSchool(), groep);
+        genererenScores(l);
         // TODO uitgeschreven leerlingen
         return l;
+    }
+
+    private void genererenScores(Leerling leerling) {
+	    toetsen.forEach(toetsafname -> {
+            Score score = new Score();
+            score.setLeerling(leerling);
+            score.setToetsafname(toetsafname);
+            score.setCijferScore(genererenScore(toetsafname.getToets().getSoortScore()));
+            scoreRepository.save(score);
+        });
+    }
+
+    private BigDecimal genererenScore(SoortScore soortScore) {
+	    if (soortScore == SoortScore.CIJFER_1_10) {
+	        return new BigDecimal(random.nextDouble() * 9 + 1).setScale(1, RoundingMode.HALF_UP);
+        } else if (soortScore == SoortScore.SCORE_500) {
+	        return new BigDecimal(randomInt(200, 800)).setScale(0, RoundingMode.UP);
+        }
+        return null;
+    }
+
+    private void genererenToetsen() {
+        toetsen = Arrays.asList(
+                createToets("Centraal taal", SoortScore.SCORE_500, "Centraal"),
+                createToets("Centraal rekenen", SoortScore.SCORE_500, "Centraal"),
+                createToets("Dictee", SoortScore.CIJFER_1_10, "School"),
+                createToets("Hoofdrekenen", SoortScore.CIJFER_1_10, "School"),
+                createToets("Grammatica", SoortScore.CIJFER_1_10, "School")
+        );
+    }
+
+    private Toetsafname createToets(String omschrijving, SoortScore soortScore, String soort) {
+        Toets toets = new Toets();
+        toets.setOmschrijving(omschrijving);
+        toets.setSoortScore(soortScore);
+        toets.setSoort(soort);
+        toetsRepository.save(toets);
+        Toetsafname toetsafname = new Toetsafname();
+        toetsafname.setToets(toets);
+        toetsafname.setDatum(
+                DateUtils.addDays(
+                        DateUtils.addMonths(datumBeginSchooljaar, randomInt(1, 6)),
+                        randomInt(1, 27)));
+        toetsafnameRepository.save(toetsafname);
+        return toetsafname;
     }
 
     private void genererenInschrijving(Leerling leerling, School school, Groep laatsteGroep) {
@@ -229,7 +267,7 @@ public class TestdataGenerator implements CommandLineRunner {
                     return gm;
                 })
                 .forEach(gm -> {
-                    log.info("Koppel medewerker {} aan groep {}", gm.getMedewerker().getId(), gm.getGroep());
+                    log.info("Koppel medewerker {} aan groep {}", gm.getMedewerker().getId(), gm.getGroep().getId());
                     groepMedewerkerRepository.save(gm);
                 });
         school.getBijbehorendeScholen().forEach(s -> koppelenMedewerkerAanSchool(medewerker, s));
@@ -357,6 +395,9 @@ public class TestdataGenerator implements CommandLineRunner {
     }
 
     private void truncateTables() {
+	    scoreRepository.deleteAllInBatch();
+	    toetsafnameRepository.deleteAllInBatch();
+	    toetsRepository.deleteAllInBatch();
         groepLeerlingRepository.deleteAllInBatch();
         groepMedewerkerRepository.deleteAllInBatch();
         gebruikerRepository.deleteAllInBatch();
