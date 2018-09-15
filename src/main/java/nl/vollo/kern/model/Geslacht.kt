@@ -1,4 +1,4 @@
 package nl.vollo.kern.model;
-public enum Geslacht {
+enum class Geslacht {
     MAN, VROUW, OVERIG
 }

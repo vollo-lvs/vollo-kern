@@ -1,5 +1,5 @@
 package nl.vollo.kern.model;
-public enum SoortScore {
+enum class SoortScore {
     LETTER_A_F,
     CIJFER_1_10,
     SCORE_500

@@ -20,29 +20,29 @@ data class Leerling(
         override val version: Int = 0,
 
         @Column(nullable = false)
-        val voornamen: String,
+        var voornamen: String,
 
         @Column(nullable = false)
-        val roepnaam: String,
+        var roepnaam: String,
 
         @Column
-        val tussenvoegsel: String?,
+        var tussenvoegsel: String? = null,
 
         @Column(nullable = false)
-        val achternaam: String,
+        var achternaam: String,
 
         @Column(nullable = false)
         @Temporal(TemporalType.DATE)
-        val geboortedatum: Date,
+        var geboortedatum: Date,
 
         @Enumerated(EnumType.STRING)
-        val geslacht: Geslacht?,
+        var geslacht: Geslacht? = null,
 
         @Embedded
-        val adres: Adres?,
+        var adres: Adres? = null,
 
         @JsonIgnore
         @OneToMany(mappedBy = "leerling", targetEntity = Inschrijving::class, fetch = FetchType.LAZY)
         @OrderBy("datumInschrijving")
-        val inschrijvingen: List<Inschrijving> = ArrayList()
+        var inschrijvingen: List<Inschrijving> = ArrayList()
 ) : DomainObject(DomainEntity.leerling, id, version)
