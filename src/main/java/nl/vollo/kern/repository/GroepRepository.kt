@@ -1,17 +1,14 @@
-package nl.vollo.kern.repository;
+package nl.vollo.kern.repository
 
-import nl.vollo.kern.model.Groep;
-import nl.vollo.kern.model.Leerling;
-import nl.vollo.kern.model.Medewerker;
+import nl.vollo.kern.model.Groep
+import nl.vollo.kern.model.Leerling
+import nl.vollo.kern.model.Medewerker
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import java.util.*
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.Date;
-import java.util.List;
-
-public interface GroepRepository extends JpaRepository<Groep, Long> {
+interface GroepRepository : JpaRepository<Groep, Long> {
 
     @Query("select l from Leerling l " +
             "where l in (" +
@@ -21,9 +18,9 @@ public interface GroepRepository extends JpaRepository<Groep, Long> {
             "  and (gl.datumEinde is null or gl.datumEinde >= :peildatum) " +
             ") " +
             "order by l.achternaam, l.roepnaam")
-    List<Leerling> getGroepLeerlingen(
-            @Param("groepId") Long id,
-            @Param("peildatum") Date peildatum);
+    fun getGroepLeerlingen(
+            @Param("groepId") id: Long?,
+            @Param("peildatum") peildatum: Date): List<Leerling>
 
     @Query("select g from Groep g "
             + "where g in ( "
@@ -32,7 +29,7 @@ public interface GroepRepository extends JpaRepository<Groep, Long> {
             + "  and gm.datumBegin <= :peildatum "
             + "  and (gm.datumEinde is null or gm.datumEinde >= :peildatum) "
             + ")")
-    List<Groep> findByMedewerker(
-            @Param("medewerker") Medewerker medewerker,
-            @Param("peildatum") Date peildatum);
+    fun findByMedewerker(
+            @Param("medewerker") medewerker: Medewerker,
+            @Param("peildatum") peildatum: Date): List<Groep>
 }

@@ -31,7 +31,7 @@ class MijnGroepenCtl {
     @GetMapping(produces = ["application/json"])
     @PreAuthorize("hasRole('GEBRUIKER')")
     fun getMijnGroepen(@AuthenticationPrincipal gebruiker: Gebruiker): List<Groep> {
-        return groepRepository.findByMedewerker(gebruiker.medewerker, Date())
+        return groepRepository.findByMedewerker(gebruiker.medewerker!!, Date())
     }
 
     @ApiOperation(value = "Haal de leerlingen van een groep van de ingelogde medewerker op.")
