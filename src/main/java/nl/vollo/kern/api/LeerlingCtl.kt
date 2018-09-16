@@ -20,7 +20,7 @@ import java.util.*
 class LeerlingCtl {
 
     @Autowired
-    lateinit var leerlingRepository: LeerlingRepository
+    private lateinit var leerlingRepository: LeerlingRepository
 
     @GetMapping(produces = ["application/json"])
     fun listAll(): List<Leerling> = leerlingRepository.findAll()
