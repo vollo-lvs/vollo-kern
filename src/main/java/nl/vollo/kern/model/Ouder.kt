@@ -13,18 +13,18 @@ data class Ouder(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
-        override val version: Int,
+        override val version: Int = 0,
 
         @Column(nullable = false)
         @NotNull
         val voornaam: String,
 
         @Column
-        val tussenvoegsel: String?,
+        val tussenvoegsel: String? = null,
 
         @Column(nullable = false)
         @NotNull
@@ -36,10 +36,10 @@ data class Ouder(
         val geboortedatum: Date,
 
         @Enumerated(EnumType.STRING)
-        val geslacht: Geslacht?,
+        val geslacht: Geslacht? = null,
 
         @Embedded
-        val adres: Adres
+        val adres: Adres? = null
 
 ) : DomainObject(DomainEntity.ouder, id, version)
 

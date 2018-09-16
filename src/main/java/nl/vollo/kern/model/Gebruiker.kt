@@ -18,11 +18,11 @@ data class Gebruiker(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
-        override val version: Int,
+        override val version: Int = 0,
 
         @Column(nullable = false)
         @NotNull
@@ -34,15 +34,15 @@ data class Gebruiker(
         val wachtwoord: String,
 
         @Column
-        val rollen: String?,
+        val rollen: String? = null,
 
         @ManyToOne(targetEntity = Medewerker::class)
         @JoinColumn(name = "medewerker_id", foreignKey = ForeignKey(name = "geb_mdw_fk"))
-        val medewerker: Medewerker?,
+        val medewerker: Medewerker? = null,
 
         @ManyToOne(targetEntity = Ouder::class)
         @JoinColumn(name = "ouder_id", foreignKey = ForeignKey(name = "geb_oud_fk"))
-        val ouder: Ouder?
+        val ouder: Ouder? = null
 
 ) : DomainObject(DomainEntity.gebruiker, id, version), UserDetails {
 

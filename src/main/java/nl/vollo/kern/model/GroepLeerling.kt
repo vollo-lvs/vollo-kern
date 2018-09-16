@@ -10,11 +10,11 @@ data class GroepLeerling(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
-        override val version: Int,
+        override val version: Int = 0,
 
         @ManyToOne(targetEntity = Groep::class)
         @JoinColumn(name = "groep_id", foreignKey = ForeignKey(name = "gll_grp_fk"))
@@ -30,6 +30,6 @@ data class GroepLeerling(
 
         @Column(name = "datum_einde")
         @Temporal(TemporalType.DATE)
-        val datumEinde: Date?
+        val datumEinde: Date? = null
 
 ) : DomainObject(DomainEntity.groepLeerling, id, version)

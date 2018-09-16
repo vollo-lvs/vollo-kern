@@ -10,7 +10,7 @@ data class Inschrijving(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
@@ -26,7 +26,7 @@ data class Inschrijving(
 
         @Column(name = "datum_uitschrijving")
         @Temporal(TemporalType.DATE)
-        val datumUitschrijving: Date?,
+        val datumUitschrijving: Date? = null,
 
         @ManyToOne(targetEntity = School::class)
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "ins_scl_fk"), nullable = false)

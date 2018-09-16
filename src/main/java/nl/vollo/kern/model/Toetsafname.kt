@@ -10,14 +10,14 @@ data class Toetsafname(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
-        override val version: Int,
+        override val version: Int = 0,
 
         @Column(name = "omschrijving")
-        val omschrijving: String?,
+        val omschrijving: String? = null,
 
         @ManyToOne(targetEntity = Toets::class)
         @JoinColumn(name = "toets_id", foreignKey = ForeignKey(name = "tan_tts_fk"))
@@ -25,5 +25,5 @@ data class Toetsafname(
 
         @Column(name = "datum")
         @Temporal(TemporalType.DATE)
-        val datum: Date?
+        val datum: Date? = null
 ) : DomainObject(DomainEntity.toetsafname, id, version)

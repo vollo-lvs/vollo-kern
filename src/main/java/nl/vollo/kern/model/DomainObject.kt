@@ -16,14 +16,17 @@ import java.io.Serializable
         JsonSubTypes.Type(name = "inschrijving", value = Inschrijving::class),
         JsonSubTypes.Type(name = "gebruiker", value = Gebruiker::class)
 )
-abstract class DomainObject(
+open class DomainObject(
         @JsonProperty
-        val _type: DomainEntity,
+        val _type: DomainEntity?,
 
         open val id: Long?,
 
         open val version: Int
 ) : Serializable, Comparable<DomainObject> {
+
+    // Nodig voor Hibernate
+    constructor() : this(null, null, 0) {}
 
     override fun compareTo(other: DomainObject) = id!!.compareTo(other.id!!)
 }
