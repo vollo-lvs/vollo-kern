@@ -26,4 +26,4 @@ data class Toetsafname(
         @Column(name = "datum")
         @Temporal(TemporalType.DATE)
         val datum: Date? = null
-) : DomainObject(DomainEntity.toetsafname, id, version)
+) : DomainObject(DomainEntity.TOETSAFNAME, id, version)

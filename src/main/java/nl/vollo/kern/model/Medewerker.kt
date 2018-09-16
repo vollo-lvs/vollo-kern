@@ -26,4 +26,4 @@ data class Medewerker(
         @Column(nullable = false)
         val achternaam: String
 
-) : DomainObject(DomainEntity.medewerker, id, version)
+) : DomainObject(DomainEntity.MEDEWERKER, id, version)

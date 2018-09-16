@@ -32,4 +32,4 @@ data class Inschrijving(
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "ins_scl_fk"), nullable = false)
         val school: School
 
-) : DomainObject(DomainEntity.inschrijving, id, version)
+) : DomainObject(DomainEntity.INSCHRIJVING, id, version)

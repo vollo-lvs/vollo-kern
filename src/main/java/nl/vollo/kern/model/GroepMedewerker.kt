@@ -32,4 +32,4 @@ data class GroepMedewerker(
         @Temporal(TemporalType.DATE)
         val datumEinde: Date? = null
 
-) : DomainObject(DomainEntity.groepMedewerker, id, version)
+) : DomainObject(DomainEntity.GROEP_MEDEWERKER, id, version)

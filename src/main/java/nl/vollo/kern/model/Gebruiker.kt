@@ -44,7 +44,7 @@ data class Gebruiker(
         @JoinColumn(name = "ouder_id", foreignKey = ForeignKey(name = "geb_oud_fk"))
         val ouder: Ouder? = null
 
-) : DomainObject(DomainEntity.gebruiker, id, version), UserDetails {
+) : DomainObject(DomainEntity.GEBRUIKER, id, version), UserDetails {
 
     @JsonIgnore
     override fun getAuthorities(): Collection<GrantedAuthority> =

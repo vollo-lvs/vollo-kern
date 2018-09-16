@@ -30,4 +30,4 @@ data class Score(
         @Column(name = "cijfer_score")
         val cijferScore: BigDecimal? = null
 
-) : DomainObject(DomainEntity.score, id, version)
+) : DomainObject(DomainEntity.SCORE, id, version)

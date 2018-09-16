@@ -42,4 +42,4 @@ data class Groep(
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "grp_scl_fk"), nullable = false)
         val school: School
 
-) : DomainObject(DomainEntity.groep, id, version)
+) : DomainObject(DomainEntity.GROEP, id, version)

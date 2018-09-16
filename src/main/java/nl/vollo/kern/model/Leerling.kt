@@ -45,4 +45,4 @@ data class Leerling(
         @OneToMany(mappedBy = "leerling", targetEntity = Inschrijving::class, fetch = FetchType.LAZY)
         @OrderBy("datumInschrijving")
         var inschrijvingen: MutableList<Inschrijving> = ArrayList()
-) : DomainObject(DomainEntity.leerling, id, version)
+) : DomainObject(DomainEntity.LEERLING, id, version)

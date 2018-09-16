@@ -28,4 +28,4 @@ data class Toets(
         @Column(name = "omschrijving")
         val omschrijving: String? = null
 
-) : DomainObject(DomainEntity.toets, id, version)
+) : DomainObject(DomainEntity.TOETS, id, version)

@@ -22,4 +22,4 @@ data class OuderLeerling(
         @ManyToOne(targetEntity = Leerling::class)
         @JoinColumn(name = "leerling_id", foreignKey = ForeignKey(name = "oll_llg_fk"))
         val leerling: Leerling
-) : DomainObject(DomainEntity.ouderLeerling, id, version)
+) : DomainObject(DomainEntity.OUDER_LEERLING, id, version)

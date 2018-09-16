@@ -41,5 +41,5 @@ data class Ouder(
         @Embedded
         val adres: Adres? = null
 
-) : DomainObject(DomainEntity.ouder, id, version)
+) : DomainObject(DomainEntity.OUDER, id, version)
 
