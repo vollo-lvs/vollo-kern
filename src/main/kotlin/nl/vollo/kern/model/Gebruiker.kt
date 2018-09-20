@@ -7,11 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull
-import javax.xml.bind.annotation.XmlRootElement
 
 @Entity
 @Table(name = "gebruikers")
-@XmlRootElement
 data class Gebruiker(
 
         @Id

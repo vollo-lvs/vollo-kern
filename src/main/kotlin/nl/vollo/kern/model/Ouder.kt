@@ -3,11 +3,9 @@ package nl.vollo.kern.model;
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull
-import javax.xml.bind.annotation.XmlRootElement
 
 @Entity
 @Table(name = "ouders")
-@XmlRootElement
 data class Ouder(
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")

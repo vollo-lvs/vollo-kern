@@ -3,11 +3,9 @@ package nl.vollo.kern.model;
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
-import javax.xml.bind.annotation.XmlRootElement
 
 @Entity
 @Table(name = "scholen")
-@XmlRootElement
 data class School(
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")

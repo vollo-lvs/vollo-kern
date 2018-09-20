@@ -1,0 +1,14 @@
+### Authenticate
+POST {{base}}/public/inloggen
+Content-Type: application/json
+
+{"gebruikersnaam":"m0","wachtwoord":"m0"}
+
+> {%
+    client.global.set("token", response.headers.valueOf("Set-Cookie"));
+%}
+###
+GET {{base}}/mijn-groepen
+Cookie: {{token}}
+
+###

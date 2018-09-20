@@ -1,11 +1,9 @@
 package nl.vollo.kern.model;
 
 import javax.persistence.*
-import javax.xml.bind.annotation.XmlRootElement
 
 @Entity
 @Table(name = "medewerkers")
-@XmlRootElement
 data class Medewerker(
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
