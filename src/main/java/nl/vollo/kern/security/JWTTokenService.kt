@@ -9,46 +9,48 @@ import io.jsonwebtoken.SignatureAlgorithm.HS256
 import io.jsonwebtoken.impl.TextCodec.BASE64
 import io.jsonwebtoken.impl.compression.GzipCompressionCodec
 import nl.vollo.kern.DatumService
+import nl.vollo.kern.VolloConfig
 import org.apache.commons.lang3.StringUtils.substringBeforeLast
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 internal class JWTTokenService() : Clock {
+    private val log = LoggerFactory.getLogger(JWTTokenService::class.java)
 
     @Autowired
     private lateinit var datumService: DatumService
 
-    //TODO Gebruik @ConfigurationProperties
-    @Value("\${jwt.issuer:vollo}")
-    private var issuer: String = "vollo"
-    @Value("\${jwt.expiration-sec:86400}")
-    private var expirationSec: Int = 86400
-    @Value("\${jwt.clock-skew-sec:300}")
-    private var clockSkewSec: Int = 300
-    @Value("\${jwt.secret:secret}")
-    private var secret: String = "secret"
-    private var secretKey: String = BASE64.encode(secret)
+    @Autowired
+    private lateinit var volloConfig: VolloConfig
+
+    private val secretKey: String
+        get() = BASE64.encode(volloConfig.jwt.secret)
 
     fun permanent(attributes: Map<String, String>): String {
         return newToken(attributes, 0)
     }
 
     fun expiring(attributes: Map<String, String>): String {
-        return newToken(attributes, expirationSec)
+        return newToken(attributes, volloConfig.jwt.expiration.seconds)
     }
 
-    private fun newToken(attributes: Map<String, String>, expiresInSec: Int): String {
+    private fun newToken(attributes: Map<String, String>, expiresInSec: Long): String {
+
+        log.error(">>>>>>>>>issuer={} exp={} skew={} secret={}",
+                volloConfig.jwt.issuer, volloConfig.jwt.expiration.seconds,
+                volloConfig.jwt.clockSkew.seconds, volloConfig.jwt.secret)
+
         val now = datumService.now()
         val claims = Jwts
                 .claims()
-                .setIssuer(issuer)
+                .setIssuer(volloConfig.jwt.issuer)
                 .setIssuedAt(Date.from(now.toInstant()))
 
         if (expiresInSec > 0) {
-            val expiresAt = now.plusSeconds(expiresInSec.toLong())
+            val expiresAt = now.plusSeconds(expiresInSec)
             claims.expiration = Date.from(expiresAt.toInstant())
         }
         claims.putAll(attributes)
@@ -64,9 +66,9 @@ internal class JWTTokenService() : Clock {
     fun verify(token: String): Map<String, String> {
         val parser = Jwts
                 .parser()
-                .requireIssuer(issuer)
+                .requireIssuer(volloConfig.jwt.issuer)
                 .setClock(this)
-                .setAllowedClockSkewSeconds(clockSkewSec.toLong())
+                .setAllowedClockSkewSeconds(volloConfig.jwt.clockSkew.seconds)
                 .setSigningKey(secretKey)
         return parseClaims { parser.parseClaimsJws(token).body }
     }
@@ -74,9 +76,9 @@ internal class JWTTokenService() : Clock {
     fun untrusted(token: String): Map<String, String> {
         val parser = Jwts
                 .parser()
-                .requireIssuer(issuer)
+                .requireIssuer(volloConfig.jwt.issuer)
                 .setClock(this)
-                .setAllowedClockSkewSeconds(clockSkewSec.toLong())
+                .setAllowedClockSkewSeconds(volloConfig.jwt.clockSkew.seconds)
 
         // See: https://github.com/jwtk/jjwt/issues/135
         val withoutSignature = substringBeforeLast(token, DOT) + DOT
