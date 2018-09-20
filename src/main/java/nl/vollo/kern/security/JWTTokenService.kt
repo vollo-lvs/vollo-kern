@@ -11,14 +11,12 @@ import io.jsonwebtoken.impl.compression.GzipCompressionCodec
 import nl.vollo.kern.DatumService
 import nl.vollo.kern.VolloConfig
 import org.apache.commons.lang3.StringUtils.substringBeforeLast
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 internal class JWTTokenService() : Clock {
-    private val log = LoggerFactory.getLogger(JWTTokenService::class.java)
 
     @Autowired
     private lateinit var datumService: DatumService

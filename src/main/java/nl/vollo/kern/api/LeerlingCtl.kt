@@ -2,6 +2,7 @@ package nl.vollo.kern.api
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import mu.KotlinLogging
 import nl.vollo.kern.model.Geslacht
 import nl.vollo.kern.model.Leerling
 import nl.vollo.kern.repository.LeerlingRepository
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
+
+private val log = KotlinLogging.logger {}
 
 @Api(value = "Leerling")
 @RestController()
@@ -41,7 +44,7 @@ class LeerlingCtl {
                     Geslacht.OVERIG
         )
         leerling = leerlingRepository.save(leerling)
-        //log.info("Leerling aangemaakt: {}", leerling);
+        log.info { "Leerling aangemaakt: $leerling" }
         return ResponseEntity(leerling, HttpStatus.OK)
     }
 

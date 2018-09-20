@@ -1,11 +1,11 @@
 package nl.vollo.kern.testdata
 
+import mu.KotlinLogging
 import nl.vollo.kern.model.*
 import nl.vollo.kern.repository.*
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.time.DateUtils
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
@@ -17,10 +17,10 @@ import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.persistence.PersistenceException
 
+private val log = KotlinLogging.logger {}
+
 @Component
 class TestdataGenerator : CommandLineRunner {
-    private val log = LoggerFactory.getLogger(TestdataGenerator::class.java)
-
     private val aantalScholen = 3
     private val datumBeginSchooljaar = calcBeginSchooljaar()
 
@@ -104,7 +104,7 @@ class TestdataGenerator : CommandLineRunner {
         for (i in 0 until aantalScholen) {
             val school = genererenSchool(hoortBij)
             if (hoortBij == null) {
-                log.info("Bijbehorende scholen {}", school.bijbehorendeScholen)
+                log.info { "Bijbehorende scholen ${school.bijbehorendeScholen}" }
                 val medewerker = genererenMedewerker(i)
                 koppelenMedewerkerAanSchool(medewerker, school)
             }
@@ -118,7 +118,7 @@ class TestdataGenerator : CommandLineRunner {
                 adres = randomAdres(schoolPlaatsnamen),
                 hoortBij = hoortBij)
         schoolRepository.save(s)
-        log.info("Gegenereerd school {}", s.id)
+        log.info { "Gegenereerd school ${s.id}" }
 
         hoortBij?.bijbehorendeScholen?.add(s)
         if (hoortBij == null && kans(0.5)) {
@@ -137,7 +137,7 @@ class TestdataGenerator : CommandLineRunner {
                     naam = i.toString()
             )
             groepRepository.save(g)
-            log.info("Gegenereerd groep {}", g.id)
+            log.info { "Gegenereerd groep ${g.id}" }
             school.groepen.add(g)
             genererenGroepLeerlingen(g, schoolPlaatsnamen)
         }
@@ -269,7 +269,7 @@ class TestdataGenerator : CommandLineRunner {
                             datumBegin = d)
                 }
                 .forEach { gm ->
-                    log.info("Koppel medewerker {} aan groep {}", gm.medewerker.id, gm.groep.id)
+                    log.info { "Koppel medewerker ${gm.medewerker.id} aan groep ${gm.groep.id}" }
                     groepMedewerkerRepository.save(gm)
                 }
         school.bijbehorendeScholen.forEach { s -> koppelenMedewerkerAanSchool(medewerker, s) }

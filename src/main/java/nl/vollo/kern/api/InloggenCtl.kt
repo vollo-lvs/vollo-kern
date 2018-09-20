@@ -2,6 +2,7 @@ package nl.vollo.kern.api;
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import mu.KotlinLogging
 import nl.vollo.kern.repository.GebruikerRepository
 import nl.vollo.kern.rest.RestUtils.errorHeader
 import nl.vollo.kern.security.GebruikerAuthenticationService
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
+private val log = KotlinLogging.logger {}
+
 @RestController
 @Api(value = "Gebruiker")
 @RequestMapping("/public/inloggen")
@@ -31,8 +34,8 @@ class InloggenCtl {
     @ApiOperation(value = "Inloggen.")
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE])
     fun inloggen(@RequestBody @Valid data: InloggenRequest, request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Void> {
-        // TODO logger
-        System.out.println("un=" + data.gebruikersnaam + ", ww=" + data.wachtwoord);
+        // TODO logger ww weg
+        log.info { "Inloggen un=${data.gebruikersnaam}, ww=${data.wachtwoord}" }
         return authentication
                 .login(data.gebruikersnaam, data.wachtwoord)
                 .map { InloggenResponse(it) }
