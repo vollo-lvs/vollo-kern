@@ -38,11 +38,6 @@ internal class JWTTokenService() : Clock {
     }
 
     private fun newToken(attributes: Map<String, String>, expiresInSec: Long): String {
-
-        log.error(">>>>>>>>>issuer={} exp={} skew={} secret={}",
-                volloConfig.jwt.issuer, volloConfig.jwt.expiration.seconds,
-                volloConfig.jwt.clockSkew.seconds, volloConfig.jwt.secret)
-
         val now = datumService.now()
         val claims = Jwts
                 .claims()
