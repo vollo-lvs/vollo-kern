@@ -11,9 +11,6 @@ import javax.validation.constraints.NotNull
 @Table(name = "groepen")
 data class Groep(
 
-        @Transient
-        override val _type: DomainEntity = DomainEntity.GROEP,
-
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -46,4 +43,6 @@ data class Groep(
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "grp_scl_fk"), nullable = false)
         val school: School
 
-) : DomainObject(_type, id, version)
+) : DomainObject {
+    override val _type: DomainEntity get() = DomainEntity.GROEP
+}

@@ -7,9 +7,6 @@ import javax.persistence.*
 @Table(name = "scores")
 data class Score(
 
-        @Transient
-        override val _type: DomainEntity = DomainEntity.SCORE,
-
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -34,4 +31,6 @@ data class Score(
         @Column(name = "cijfer_score")
         val cijferScore: BigDecimal? = null
 
-) : DomainObject(_type, id, version)
+) : DomainObject {
+    override val _type: DomainEntity get() = DomainEntity.SCORE
+}

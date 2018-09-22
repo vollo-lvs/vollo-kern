@@ -1,7 +1,6 @@
 package nl.vollo.kern.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import nl.vollo.kern.model.Gebruiker
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Disabled
@@ -35,7 +34,7 @@ internal class GebruikerCtlTest {
     fun getIngelogdeGebruiker() {
         val token = inloggen()
         val headers = HttpHeaders().apply { set("Cookie", token) }
-        val gebruiker: ResponseEntity<Gebruiker> = restTemplate.exchange("http://localhost:$port/gebruiker/ingelogd", HttpMethod.GET,
+        val gebruiker: ResponseEntity<String> = restTemplate.exchange("http://localhost:$port/gebruiker/ingelogd", HttpMethod.GET,
                 HttpEntity<Void>(headers))
         println(gebruiker)
     }

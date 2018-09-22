@@ -8,9 +8,6 @@ import javax.persistence.*
 @Table(name = "scholen")
 data class School(
 
-        @Transient
-        override val _type: DomainEntity = DomainEntity.SCHOOL,
-
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -43,4 +40,6 @@ data class School(
         @OneToMany(mappedBy = "school", targetEntity = Inschrijving::class, fetch = FetchType.LAZY)
         val inschrijvingen: MutableList<Inschrijving> = ArrayList()
 
-) : DomainObject(_type, id, version)
+) : DomainObject {
+    override val _type: DomainEntity get() = DomainEntity.SCHOOL
+}

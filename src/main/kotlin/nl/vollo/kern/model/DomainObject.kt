@@ -6,25 +6,23 @@ import java.io.Serializable
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "_type", visible = true)
 @JsonSubTypes(
-        JsonSubTypes.Type(name = "leerling", value = Leerling::class),
-        JsonSubTypes.Type(name = "groep", value = Groep::class),
-        JsonSubTypes.Type(name = "groepMedewerker", value = GroepMedewerker::class),
-        JsonSubTypes.Type(name = "groepLeerling", value = GroepLeerling::class),
-        JsonSubTypes.Type(name = "school", value = School::class),
-        JsonSubTypes.Type(name = "medewerker", value = Medewerker::class),
-        JsonSubTypes.Type(name = "inschrijving", value = Inschrijving::class),
-        JsonSubTypes.Type(name = "gebruiker", value = Gebruiker::class)
+        JsonSubTypes.Type(name = "LEERLING", value = Leerling::class),
+        JsonSubTypes.Type(name = "GROEP", value = Groep::class),
+        JsonSubTypes.Type(name = "GROEP_MEDEWERKER", value = GroepMedewerker::class),
+        JsonSubTypes.Type(name = "GROEP_LEERLING", value = GroepLeerling::class),
+        JsonSubTypes.Type(name = "SCHOOL", value = School::class),
+        JsonSubTypes.Type(name = "MEDEWERKER", value = Medewerker::class),
+        JsonSubTypes.Type(name = "INSCHRIJVING", value = Inschrijving::class),
+        JsonSubTypes.Type(name = "GEBRUIKER", value = Gebruiker::class)
 )
-open class DomainObject(
-        open val _type: DomainEntity?,
+interface DomainObject : Serializable, Comparable<DomainObject> {
 
-        open val id: Long?,
+    val _type: DomainEntity
 
-        open val version: Int
-) : Serializable, Comparable<DomainObject> {
+    val id: Long?
 
-    // Nodig voor Hibernate
-    constructor() : this(null, null, 0) {}
+    val version: Int
 
     override fun compareTo(other: DomainObject) = id!!.compareTo(other.id!!)
+
 }

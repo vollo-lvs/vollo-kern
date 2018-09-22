@@ -6,9 +6,6 @@ import javax.persistence.*
 @Table(name = "ouder_leerlingen")
 data class OuderLeerling(
 
-        @Transient
-        override val _type: DomainEntity = DomainEntity.OUDER_LEERLING,
-
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -26,4 +23,8 @@ data class OuderLeerling(
         @ManyToOne(targetEntity = Leerling::class)
         @JoinColumn(name = "leerling_id", foreignKey = ForeignKey(name = "oll_llg_fk"))
         val leerling: Leerling
-) : DomainObject(_type, id, version)
+
+) : DomainObject {
+    override val _type: DomainEntity get() = DomainEntity.OUDER_LEERLING
+
+}
