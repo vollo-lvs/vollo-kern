@@ -5,6 +5,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "toetsen")
 data class Toets(
+
+        @Transient
+        override val _type: DomainEntity = DomainEntity.TOETS,
+
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -28,4 +32,4 @@ data class Toets(
         @Column(name = "omschrijving")
         val omschrijving: String? = null
 
-) : DomainObject(DomainEntity.TOETS, id, version)
+) : DomainObject(_type, id, version)

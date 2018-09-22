@@ -12,6 +12,9 @@ import javax.validation.constraints.NotNull
 @Table(name = "gebruikers")
 data class Gebruiker(
 
+        @Transient
+        override val _type: DomainEntity = DomainEntity.GEBRUIKER,
+
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
@@ -42,7 +45,7 @@ data class Gebruiker(
         @JoinColumn(name = "ouder_id", foreignKey = ForeignKey(name = "geb_oud_fk"))
         val ouder: Ouder? = null
 
-) : DomainObject(DomainEntity.GEBRUIKER, id, version), UserDetails {
+) : DomainObject(_type, id, version), UserDetails {
 
     @JsonIgnore
     override fun getAuthorities(): Collection<GrantedAuthority> =

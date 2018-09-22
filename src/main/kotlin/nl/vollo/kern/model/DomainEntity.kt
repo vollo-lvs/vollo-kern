@@ -15,5 +15,6 @@ enum class DomainEntity(val domainClass: KClass<out DomainObject>) {
     SCHOOL(School::class),
     SCORE(Score::class),
     TOETS(Toets::class),
-    TOETSAFNAME(Toetsafname::class)
+    TOETSAFNAME(Toetsafname::class),
+    GEEN(School::class)
 }

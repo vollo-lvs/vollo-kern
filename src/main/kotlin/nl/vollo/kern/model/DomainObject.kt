@@ -1,6 +1,5 @@
 package nl.vollo.kern.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import java.io.Serializable
@@ -17,8 +16,7 @@ import java.io.Serializable
         JsonSubTypes.Type(name = "gebruiker", value = Gebruiker::class)
 )
 open class DomainObject(
-        @JsonProperty
-        val _type: DomainEntity?,
+        open val _type: DomainEntity?,
 
         open val id: Long?,
 
