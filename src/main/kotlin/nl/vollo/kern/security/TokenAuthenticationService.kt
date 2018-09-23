@@ -33,5 +33,6 @@ internal class TokenAuthenticationService : GebruikerAuthenticationService {
 
     override fun logout(gebruiker: Gebruiker) {
         // Nothing to do
+        // TODO blacklist tokens?
     }
 }
