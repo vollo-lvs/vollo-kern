@@ -20,8 +20,12 @@ import javax.persistence.PersistenceException
 private val log = KotlinLogging.logger {}
 
 @Component
-class TestdataGenerator : CommandLineRunner {
-    private val aantalScholen = 3
+class TestdataGenerator() : CommandLineRunner {
+    private var aantalScholen: Int = 0
+    private var aantalGroepen: Int = 0
+    private var aantalLeerlingenMin: Int = 0
+    private var aantalLeerlingenMax: Int = 0
+
     private val datumBeginSchooljaar = calcBeginSchooljaar()
 
     lateinit var random: Random
@@ -80,7 +84,16 @@ class TestdataGenerator : CommandLineRunner {
         }
     }
 
-    fun genereren() {
+    fun genereren(
+            aantalScholen: Int = 3,
+            aantalGroepen: Int = 8,
+            aantalLeerlingenMin: Int = 15,
+            aantalLeerlingenMax: Int = 32
+    ) {
+        this.aantalScholen = aantalScholen
+        this.aantalGroepen = aantalGroepen
+        this.aantalLeerlingenMin = aantalLeerlingenMin
+        this.aantalLeerlingenMax = aantalLeerlingenMax
         try {
             // TODO betere oplossing voor deze hack
             em.createNativeQuery("alter sequence vollo_seq restart").resultList
@@ -130,7 +143,7 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun genererenGroepen(school: School, schoolPlaatsnamen: List<String>) {
-        for (i in 1..8) {
+        for (i in 1..aantalGroepen) {
             val g = Groep(
                     school = school,
                     niveau = 1,
@@ -145,7 +158,7 @@ class TestdataGenerator : CommandLineRunner {
 
     private fun genererenGroepLeerlingen(g: Groep, schoolPlaatsnamen: List<String>): List<GroepLeerling> {
         val groepLeerlingen = ArrayList<GroepLeerling>()
-        for (i in 0 until randomInt(15, 32)) {
+        for (i in 0 until randomInt(aantalLeerlingenMin, aantalLeerlingenMax)) {
             val leerling = genererenLeerling(g, schoolPlaatsnamen)
             val gl = GroepLeerling(
                     groep = g,

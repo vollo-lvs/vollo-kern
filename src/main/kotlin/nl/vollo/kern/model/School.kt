@@ -42,4 +42,8 @@ data class School(
 
 ) : DomainObject {
     override val _type: DomainEntity get() = DomainEntity.SCHOOL
+
+    override fun toString(): String {
+        return "School(id=$id, naam='$naam', adres=$adres, hoortBij=${hoortBij?.id})"
+    }
 }

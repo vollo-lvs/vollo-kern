@@ -2,9 +2,11 @@ package nl.vollo.kern.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import nl.vollo.kern.test.isTextNode
+import nl.vollo.kern.testdata.TestdataGenerator
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,16 +21,28 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class GebruikerCtlTest {
+internal class GebruikerCtlApiTest {
 
     @LocalServerPort
-//    @Value("\${local.server.port}")
     private var port: Int = 0
 
     private val objectMapper = ObjectMapper()
 
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
+
+    @Autowired
+    private lateinit var testdataGenerator: TestdataGenerator
+
+    @BeforeAll
+    fun beforeAll() {
+        testdataGenerator.genereren(
+                aantalScholen = 1,
+                aantalGroepen = 1,
+                aantalLeerlingenMin = 3,
+                aantalLeerlingenMax = 5
+        )
+    }
 
     @Test
     fun getIngelogdeGebruiker() {
@@ -40,7 +54,11 @@ internal class GebruikerCtlTest {
         println(gebruiker.body)
         val json = objectMapper.readTree(gebruiker.body)
         assertThat(json["gebruikersnaam"], isTextNode("m0"))
-        assertThat(json["medewerker"]["voornaam"], isTextNode("Yoshka"))
+        assertThat(json["rollen"], isTextNode("ROLE_GEBRUIKER"))
+        assertThat(json["_type"], isTextNode("GEBRUIKER"))
+        assertThat(json["medewerker"]["voornaam"], isTextNode("Gerharda"))
+        assertThat(json["medewerker"]["achternaam"], isTextNode("Hoef"))
+        assertThat(json["medewerker"]["_type"], isTextNode("MEDEWERKER"))
     }
 
     @Test
