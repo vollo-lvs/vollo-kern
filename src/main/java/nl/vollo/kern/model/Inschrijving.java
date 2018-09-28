@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.inschrijving)
+@DomainType(DomainEntity.INSCHRIJVING)
 public class Inschrijving extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

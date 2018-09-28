@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.groepLeerling)
+@DomainType(DomainEntity.GROEP_LEERLING)
 public class GroepLeerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

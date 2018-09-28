@@ -20,7 +20,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.groep)
+@DomainType(DomainEntity.GROEP)
 public class Groep extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

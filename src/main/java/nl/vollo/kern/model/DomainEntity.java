@@ -8,24 +8,24 @@ import static java.util.Arrays.asList;
 
 @Getter
 public enum DomainEntity {
-    gebruiker(Gebruiker.class),
-    groep(Groep.class),
-    groepLeerling(GroepLeerling.class),
-    groepMedewerker(GroepMedewerker.class),
-    inschrijving(Inschrijving.class),
-    leerling(Leerling.class),
-    medewerker(Medewerker.class),
-    ouder(Ouder.class),
-    ouderLeerling(OuderLeerling.class),
-    school(School.class),
-    score(Score.class),
-    toets(Toets.class),
-    toetsafname(Toetsafname.class);
+    GEBRUIKER(Gebruiker.class),
+    GROEP(Groep.class),
+    GROEP_LEERLING(GroepLeerling.class),
+    GROEP_MEDEWERKER(GroepMedewerker.class),
+    INSCHRIJVING(Inschrijving.class),
+    LEERLING(Leerling.class),
+    MEDEWERKER(Medewerker.class),
+    OUDER(Ouder.class),
+    OUDER_LEERLING(OuderLeerling.class),
+    SCHOOL(School.class),
+    SCORE(Score.class),
+    TOETS(Toets.class),
+    TOETSAFNAME(Toetsafname.class);
 
     static {
-        leerling.setAllowedEntities(DomainEntity.groepLeerling, DomainEntity.inschrijving)
+        LEERLING.setAllowedEntities(DomainEntity.GROEP_LEERLING, DomainEntity.INSCHRIJVING)
                 .setAllowedFields("voornamen", "achternaam");
-        medewerker.setAllowedEntities(DomainEntity.groepMedewerker);
+        MEDEWERKER.setAllowedEntities(DomainEntity.GROEP_MEDEWERKER);
     }
 
     private Class<? extends DomainObject> domainClass;

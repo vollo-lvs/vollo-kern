@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.gebruiker)
+@DomainType(DomainEntity.GEBRUIKER)
 public class Gebruiker extends DomainObject implements UserDetails {
 
     private static final long serialVersionUID = 1L;

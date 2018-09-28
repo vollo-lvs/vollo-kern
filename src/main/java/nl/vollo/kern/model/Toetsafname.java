@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.toetsafname)
+@DomainType(DomainEntity.TOETSAFNAME)
 public class Toetsafname extends DomainObject {
     private static final long serialVersionUID = 1L;
 

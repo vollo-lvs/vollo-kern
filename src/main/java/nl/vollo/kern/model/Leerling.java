@@ -22,7 +22,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.leerling)
+@DomainType(DomainEntity.LEERLING)
 public class Leerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

@@ -20,7 +20,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.school)
+@DomainType(DomainEntity.SCHOOL)
 public class School extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

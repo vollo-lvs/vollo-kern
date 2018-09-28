@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.medewerker)
+@DomainType(DomainEntity.MEDEWERKER)
 public class Medewerker extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

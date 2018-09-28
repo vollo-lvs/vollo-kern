@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.ouderLeerling)
+@DomainType(DomainEntity.OUDER_LEERLING)
 public class OuderLeerling extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.score)
+@DomainType(DomainEntity.SCORE)
 public class Score extends DomainObject {
 
 	private static final long serialVersionUID = 1L;

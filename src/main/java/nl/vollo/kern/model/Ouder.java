@@ -18,7 +18,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.ouder)
+@DomainType(DomainEntity.OUDER)
 public class Ouder extends DomainObject {
 
     private static final long serialVersionUID = 1L;

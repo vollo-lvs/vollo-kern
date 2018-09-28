@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-@DomainType(DomainEntity.toets)
+@DomainType(DomainEntity.TOETS)
 public class Toets extends DomainObject {
 
 	private static final long serialVersionUID = 1L;
