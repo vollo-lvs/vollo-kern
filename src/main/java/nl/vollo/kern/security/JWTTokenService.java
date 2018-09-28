@@ -1,67 +1,50 @@
 package nl.vollo.kern.security;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Clock;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.compression.GzipCompressionCodec;
 import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.DatumService;
-import org.springframework.beans.factory.annotation.Value;
+import nl.vollo.kern.VolloProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import static io.jsonwebtoken.impl.TextCodec.BASE64;
-import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 @Service
-@FieldDefaults(level = PRIVATE, makeFinal = true)
+@FieldDefaults(level = PRIVATE)
 final class JWTTokenService implements Clock {
 
     private static final String DOT = ".";
     private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
 
+    @Autowired
     DatumService datumService;
-    String issuer;
-    int expirationSec;
-    int clockSkewSec;
-    String secretKey;
 
-    JWTTokenService(final DatumService datumService,
-                    @Value("${jwt.issuer:vollo}") final String issuer,
-                    @Value("${jwt.expiration-sec:86400}") final int expirationSec,
-                    @Value("${jwt.clock-skew-sec:300}") final int clockSkewSec,
-                    @Value("${jwt.secret:secret}") final String secret) {
-        super();
-        this.datumService = requireNonNull(datumService);
-        this.issuer = requireNonNull(issuer);
-        this.expirationSec = requireNonNull(expirationSec);
-        this.clockSkewSec = requireNonNull(clockSkewSec);
-        this.secretKey = BASE64.encode(requireNonNull(secret));
-    }
+    @Autowired
+    VolloProperties volloProperties;
 
     public String permanent(final Map<String, String> attributes) {
         return newToken(attributes, 0);
     }
 
     public String expiring(final Map<String, String> attributes) {
-        return newToken(attributes, expirationSec);
+        return newToken(attributes, getExpiration());
     }
 
-    private String newToken(final Map<String, String> attributes, final int expiresInSec) {
+    private String newToken(final Map<String, String> attributes, final long expiresInSec) {
         final ZonedDateTime now = datumService.now();
         final Claims claims = Jwts
                 .claims()
-                .setIssuer(issuer)
+                .setIssuer(getIssuer())
                 .setIssuedAt(Date.from(now.toInstant()));
 
         if (expiresInSec > 0) {
@@ -73,7 +56,7 @@ final class JWTTokenService implements Clock {
         return Jwts
                 .builder()
                 .setClaims(claims)
-                .signWith(HS256, secretKey)
+                .signWith(HS256, getSecretKey())
                 .compressWith(COMPRESSION_CODEC)
                 .compact();
     }
@@ -81,19 +64,19 @@ final class JWTTokenService implements Clock {
     public Map<String, String> verify(final String token) {
         final JwtParser parser = Jwts
                 .parser()
-                .requireIssuer(issuer)
+                .requireIssuer(getIssuer())
                 .setClock(this)
-                .setAllowedClockSkewSeconds(clockSkewSec)
-                .setSigningKey(secretKey);
+                .setAllowedClockSkewSeconds(getClockSkew())
+                .setSigningKey(getSecretKey());
         return parseClaims(() -> parser.parseClaimsJws(token).getBody());
     }
 
     public Map<String, String> untrusted(final String token) {
         final JwtParser parser = Jwts
                 .parser()
-                .requireIssuer(issuer)
+                .requireIssuer(getIssuer())
                 .setClock(this)
-                .setAllowedClockSkewSeconds(clockSkewSec);
+                .setAllowedClockSkewSeconds(getClockSkew());
 
         // See: https://github.com/jwtk/jjwt/issues/135
         final String withoutSignature = substringBeforeLast(token, DOT) + DOT;
@@ -117,4 +100,21 @@ final class JWTTokenService implements Clock {
     public Date now() {
         return Date.from(datumService.now().toInstant());
     }
+
+    private String getIssuer() {
+        return volloProperties.getJwt().getIssuer();
+    }
+
+    private String getSecretKey() {
+        return BASE64.encode(volloProperties.getJwt().getSecret());
+    }
+
+    private long getExpiration() {
+        return volloProperties.getJwt().getExpiration().getSeconds();
+    }
+
+    private long getClockSkew() {
+        return volloProperties.getJwt().getClockSkew().getSeconds();
+    }
+
 }
