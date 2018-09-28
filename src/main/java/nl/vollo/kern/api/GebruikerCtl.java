@@ -1,26 +1,29 @@
 package nl.vollo.kern.api;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.model.Gebruiker;
+import nl.vollo.kern.security.CookieService;
 import nl.vollo.kern.security.GebruikerAuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static lombok.AccessLevel.PACKAGE;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @RestController
 @RequestMapping("/gebruiker")
-@FieldDefaults(level = PRIVATE, makeFinal = true)
-@AllArgsConstructor(access = PACKAGE)
+@FieldDefaults(level = PRIVATE)
 final class GebruikerCtl {
-    @NonNull
+
+    @Autowired
     GebruikerAuthenticationService authentication;
+
+    @Autowired
+    CookieService cookieService;
 
     @GetMapping("/ingelogd")
     Gebruiker getIngelogdeGebruiker(@AuthenticationPrincipal final Gebruiker gebruiker) {
@@ -28,7 +31,9 @@ final class GebruikerCtl {
     }
 
     @PostMapping("/uitloggen")
-    void logout(@AuthenticationPrincipal final Gebruiker gebruiker) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void logout(@AuthenticationPrincipal final Gebruiker gebruiker, HttpServletRequest request, HttpServletResponse response) {
         authentication.logout(gebruiker);
+        response.addCookie(cookieService.verwijderCookie(request));
     }
 }

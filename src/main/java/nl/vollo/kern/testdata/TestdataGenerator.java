@@ -1,5 +1,7 @@
 package nl.vollo.kern.testdata;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.*;
 import nl.vollo.kern.repository.*;
@@ -20,9 +22,14 @@ import java.util.*;
 
 @Component
 @Log4j2
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestdataGenerator implements CommandLineRunner {
 
-    private long aantalScholen = 3L;
+    private int aantalScholen = 3;
+    private int aantalGroepen = 0;
+    private int aantalLeerlingenMin = 0;
+    private int aantalLeerlingenMax = 0;
+
     private Date datumBeginSchooljaar = calcBeginSchooljaar();
 
     private Random random;
@@ -82,6 +89,16 @@ public class TestdataGenerator implements CommandLineRunner {
 	}
 
     public void genereren() {
+        genereren(3, 8, 15, 32);
+    }
+
+    public void genereren(int aantalScholen, int aantalGroepen,
+                          int aantalLeerlingenMin, int aantalLeerlingenMax) {
+        this.aantalScholen = aantalScholen;
+        this.aantalGroepen = aantalGroepen;
+        this.aantalLeerlingenMin = aantalLeerlingenMin;
+        this.aantalLeerlingenMax = aantalLeerlingenMax;
+
         try {
             em.createNativeQuery("alter sequence vollo_seq restart").getResultList();
         } catch (PersistenceException e) {}
@@ -130,7 +147,7 @@ public class TestdataGenerator implements CommandLineRunner {
     }
 
     private void genererenGroepen(School school, List<String> schoolPlaatsnamen) {
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= aantalGroepen; i++) {
             Groep g = new Groep();
             g.setSchool(school);
             g.setNiveau(i);
@@ -144,7 +161,7 @@ public class TestdataGenerator implements CommandLineRunner {
 
     private List<GroepLeerling> genererenGroepLeerlingen(Groep g, List<String> schoolPlaatsnamen) {
         List<GroepLeerling> groepLeerlingen = new ArrayList<>();
-        for (int i = 0; i < randomInt(15, 32); i++) {
+        for (int i = 0; i < randomInt(aantalLeerlingenMin, aantalLeerlingenMax); i++) {
             Leerling leerling = genererenLeerling(g, schoolPlaatsnamen);
             GroepLeerling gl = new GroepLeerling();
             gl.setGroep(g);

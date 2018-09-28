@@ -10,14 +10,14 @@ import java.io.Serializable;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "_type", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Leerling.class, name = "leerling"),
-        @JsonSubTypes.Type(value = Groep.class, name = "groep"),
-        @JsonSubTypes.Type(value = GroepMedewerker.class, name = "groepMedewerker"),
-        @JsonSubTypes.Type(value = GroepLeerling.class, name = "groepLeerling"),
-        @JsonSubTypes.Type(value = School.class, name = "school"),
-        @JsonSubTypes.Type(value = Medewerker.class, name = "medewerker"),
-        @JsonSubTypes.Type(value = Inschrijving.class, name = "inschrijving"),
-        @JsonSubTypes.Type(value = Gebruiker.class, name = "gebruiker")
+        @JsonSubTypes.Type(value = Leerling.class, name = "LEERLING"),
+        @JsonSubTypes.Type(value = Groep.class, name = "GROEP"),
+        @JsonSubTypes.Type(value = GroepMedewerker.class, name = "GROEP_MEDEWERKER"),
+        @JsonSubTypes.Type(value = GroepLeerling.class, name = "GROEP_LEERLING"),
+        @JsonSubTypes.Type(value = School.class, name = "SCHOOL"),
+        @JsonSubTypes.Type(value = Medewerker.class, name = "MEDEWERKER"),
+        @JsonSubTypes.Type(value = Inschrijving.class, name = "INSCHRIJVING"),
+        @JsonSubTypes.Type(value = Gebruiker.class, name = "GEBRUIKER")
 })
 @Log4j2
 public abstract class DomainObject implements Serializable, Comparable<DomainObject> {
