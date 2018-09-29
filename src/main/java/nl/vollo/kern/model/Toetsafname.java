@@ -1,9 +1,5 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
@@ -11,10 +7,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "toetsafnames")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.TOETSAFNAME)
 public class Toetsafname extends DomainObject {
     private static final long serialVersionUID = 1L;
@@ -39,4 +31,47 @@ public class Toetsafname extends DomainObject {
     @Column(name = "datum")
     @Temporal(TemporalType.DATE)
     private Date datum;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getOmschrijving() {
+        return omschrijving;
+    }
+
+    public void setOmschrijving(String omschrijving) {
+        this.omschrijving = omschrijving;
+    }
+
+    public Toets getToets() {
+        return toets;
+    }
+
+    public void setToets(Toets toets) {
+        this.toets = toets;
+    }
+
+    public Date getDatum() {
+        return datum;
+    }
+
+    public void setDatum(Date datum) {
+        this.datum = datum;
+    }
 }

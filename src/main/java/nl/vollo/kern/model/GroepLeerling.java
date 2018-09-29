@@ -1,9 +1,5 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
@@ -11,10 +7,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "groep_leerlingen")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.GROEP_LEERLING)
 public class GroepLeerling extends DomainObject {
 
@@ -45,4 +37,55 @@ public class GroepLeerling extends DomainObject {
     @Column(name = "datum_einde")
     @Temporal(TemporalType.DATE)
     private Date datumEinde;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Groep getGroep() {
+        return groep;
+    }
+
+    public void setGroep(Groep groep) {
+        this.groep = groep;
+    }
+
+    public Leerling getLeerling() {
+        return leerling;
+    }
+
+    public void setLeerling(Leerling leerling) {
+        this.leerling = leerling;
+    }
+
+    public Date getDatumBegin() {
+        return datumBegin;
+    }
+
+    public void setDatumBegin(Date datumBegin) {
+        this.datumBegin = datumBegin;
+    }
+
+    public Date getDatumEinde() {
+        return datumEinde;
+    }
+
+    public void setDatumEinde(Date datumEinde) {
+        this.datumEinde = datumEinde;
+    }
 }

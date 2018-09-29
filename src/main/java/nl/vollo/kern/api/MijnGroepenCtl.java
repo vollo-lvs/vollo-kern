@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.Value;
-import lombok.experimental.Delegate;
-import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.*;
 import nl.vollo.kern.repository.GroepRepository;
 import nl.vollo.kern.repository.ScoreRepository;
@@ -24,14 +21,13 @@ import java.util.*;
 @Api(value = "MijnGroepen")
 @RestController
 @RequestMapping("/mijn-groepen")
-@Log4j2
 public class MijnGroepenCtl {
 
     @Autowired
-    GroepRepository groepRepository;
+    private GroepRepository groepRepository;
 
     @Autowired
-    ScoreRepository scoreRepository;
+    private ScoreRepository scoreRepository;
 
     @ApiOperation(value = "Haal de groepen van de ingelogde medewerker op.")
     @GetMapping(produces = "application/json")
@@ -53,7 +49,6 @@ public class MijnGroepenCtl {
         return groepView;
     }
 
-    @Value
     public static class GroepView {
         private List<LeerlingView> leerlingen = new ArrayList<>();
         private Set<Toetsafname> toetsen = new TreeSet<>();
@@ -66,18 +61,68 @@ public class MijnGroepenCtl {
             });
             leerlingen.add(leerlingView);
         }
+
+        public List<LeerlingView> getLeerlingen() {
+            return leerlingen;
+        }
+
+        public Set<Toetsafname> getToetsen() {
+            return toetsen;
+        }
     }
 
-    @Value
     @JsonIgnoreProperties({"leerling", "adres", "inschrijvingen"})
     public static class LeerlingView {
-        @Delegate
         private Leerling leerling;
 
         private Map<Long, Object> scores = new TreeMap<>();
 
+        public LeerlingView(Leerling leerling) {
+            this.leerling = leerling;
+        }
+
         void addScore(Score score) {
             this.scores.put(score.getToetsafname().getId(), score.getCijferScore());
+        }
+
+        public Map<Long, Object> getScores() {
+            return scores;
+        }
+
+        public Long getId() {
+            return leerling.getId();
+        }
+
+        public String getVoornamen() {
+            return leerling.getVoornamen();
+        }
+
+        public String getRoepnaam() {
+            return leerling.getRoepnaam();
+        }
+
+        public String getTussenvoegsel() {
+            return leerling.getTussenvoegsel();
+        }
+
+        public String getAchternaam() {
+            return leerling.getAchternaam();
+        }
+
+        public Date getGeboortedatum() {
+            return leerling.getGeboortedatum();
+        }
+
+        public Geslacht getGeslacht() {
+            return leerling.getGeslacht();
+        }
+
+        public Adres getAdres() {
+            return leerling.getAdres();
+        }
+
+        public List<Inschrijving> getInschrijvingen() {
+            return leerling.getInschrijvingen();
         }
     }
 }

@@ -1,13 +1,12 @@
 package nl.vollo.kern.testdata;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.*;
 import nl.vollo.kern.repository.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -21,9 +20,9 @@ import java.math.RoundingMode;
 import java.util.*;
 
 @Component
-@Log4j2
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TestdataGenerator implements CommandLineRunner {
+
+    private static final Logger log = LogManager.getLogger(TestdataGenerator.class);
 
     private int aantalScholen = 3;
     private int aantalGroepen = 0;
@@ -34,51 +33,51 @@ public class TestdataGenerator implements CommandLineRunner {
 
     private Random random;
 
-    List<String> schoolnamen;
-    List<String> straatnamen;
-    List<String> plaatsnamen;
-    List<String> achternamen;
-    List<String> meisjesnamen;
-    List<String> jongensnamen;
-    List<String> tussenvoegsels;
+    private List<String> schoolnamen;
+    private List<String> straatnamen;
+    private List<String> plaatsnamen;
+    private List<String> achternamen;
+    private List<String> meisjesnamen;
+    private List<String> jongensnamen;
+    private List<String> tussenvoegsels;
 
-    List<Toetsafname> toetsen;
+    private List<Toetsafname> toetsen;
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
     @Autowired
-    SchoolRepository schoolRepository;
+    private SchoolRepository schoolRepository;
 
     @Autowired
-    GroepRepository groepRepository;
+    private GroepRepository groepRepository;
 
     @Autowired
-    GroepLeerlingRepository groepLeerlingRepository;
+    private GroepLeerlingRepository groepLeerlingRepository;
 
     @Autowired
-    LeerlingRepository leerlingRepository;
+    private LeerlingRepository leerlingRepository;
 
     @Autowired
-    InschrijvingRepository inschrijvingRepository;
+    private InschrijvingRepository inschrijvingRepository;
 
     @Autowired
-    MedewerkerRepository medewerkerRepository;
+    private MedewerkerRepository medewerkerRepository;
 
     @Autowired
-    GebruikerRepository gebruikerRepository;
+    private GebruikerRepository gebruikerRepository;
 
     @Autowired
-    GroepMedewerkerRepository groepMedewerkerRepository;
+    private GroepMedewerkerRepository groepMedewerkerRepository;
 
     @Autowired
-    ScoreRepository scoreRepository;
+    private ScoreRepository scoreRepository;
 
     @Autowired
-    ToetsRepository toetsRepository;
+    private ToetsRepository toetsRepository;
 
     @Autowired
-    ToetsafnameRepository toetsafnameRepository;
+    private ToetsafnameRepository toetsafnameRepository;
 
 	@Override
 	public void run(String... args) throws Exception {

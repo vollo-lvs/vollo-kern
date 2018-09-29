@@ -1,6 +1,5 @@
 package nl.vollo.kern.api;
 
-import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.model.Gebruiker;
 import nl.vollo.kern.security.CookieService;
 import nl.vollo.kern.security.GebruikerAuthenticationService;
@@ -12,18 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @RestController
 @RequestMapping("/gebruiker")
-@FieldDefaults(level = PRIVATE)
 final class GebruikerCtl {
 
     @Autowired
-    GebruikerAuthenticationService authentication;
+    private GebruikerAuthenticationService authentication;
 
     @Autowired
-    CookieService cookieService;
+    private CookieService cookieService;
 
     @GetMapping("/ingelogd")
     Gebruiker getIngelogdeGebruiker(@AuthenticationPrincipal final Gebruiker gebruiker) {

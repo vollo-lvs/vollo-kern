@@ -1,6 +1,5 @@
 package nl.vollo.kern.security;
 
-import lombok.experimental.FieldDefaults;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,12 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 import static java.util.Optional.ofNullable;
-import static lombok.AccessLevel.PRIVATE;
-import static org.apache.commons.lang3.StringUtils.removeStart;
 
-@FieldDefaults(level = PRIVATE, makeFinal = true)
 final class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final String BEARER = "Bearer";
 

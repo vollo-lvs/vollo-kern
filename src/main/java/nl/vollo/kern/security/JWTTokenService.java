@@ -3,7 +3,6 @@ package nl.vollo.kern.security;
 import com.google.common.collect.ImmutableMap;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.compression.GzipCompressionCodec;
-import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.DatumService;
 import nl.vollo.kern.VolloProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,21 +15,19 @@ import java.util.function.Supplier;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import static io.jsonwebtoken.impl.TextCodec.BASE64;
-import static lombok.AccessLevel.PRIVATE;
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 @Service
-@FieldDefaults(level = PRIVATE)
 final class JWTTokenService implements Clock {
 
     private static final String DOT = ".";
     private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
 
     @Autowired
-    DatumService datumService;
+    private DatumService datumService;
 
     @Autowired
-    VolloProperties volloProperties;
+    private VolloProperties volloProperties;
 
     public String permanent(final Map<String, String> attributes) {
         return newToken(attributes, 0);

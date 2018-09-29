@@ -1,23 +1,13 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
 @Table(name = "ouders")
-@XmlRootElement
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.OUDER)
 public class Ouder extends DomainObject {
 
@@ -54,4 +44,71 @@ public class Ouder extends DomainObject {
 
     @Embedded
     private Adres adres;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getVoornaam() {
+        return voornaam;
+    }
+
+    public void setVoornaam(String voornaam) {
+        this.voornaam = voornaam;
+    }
+
+    public String getTussenvoegsel() {
+        return tussenvoegsel;
+    }
+
+    public void setTussenvoegsel(String tussenvoegsel) {
+        this.tussenvoegsel = tussenvoegsel;
+    }
+
+    public String getAchternaam() {
+        return achternaam;
+    }
+
+    public void setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+    }
+
+    public Date getGeboortedatum() {
+        return geboortedatum;
+    }
+
+    public void setGeboortedatum(Date geboortedatum) {
+        this.geboortedatum = geboortedatum;
+    }
+
+    public Geslacht getGeslacht() {
+        return geslacht;
+    }
+
+    public void setGeslacht(Geslacht geslacht) {
+        this.geslacht = geslacht;
+    }
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
 }

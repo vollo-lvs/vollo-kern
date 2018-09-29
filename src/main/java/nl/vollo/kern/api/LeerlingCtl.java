@@ -2,12 +2,13 @@ package nl.vollo.kern.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Geslacht;
 import nl.vollo.kern.model.Leerling;
 import nl.vollo.kern.repository.LeerlingRepository;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,12 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Api(value = "Leerling")
 @RestController()
 @RequestMapping("/leerling")
-@Log4j2
 public class LeerlingCtl {
 
+    private static final Logger log = LogManager.getLogger(LeerlingCtl.class);
+
     @Autowired
-    LeerlingRepository leerlingRepository;
+    private LeerlingRepository leerlingRepository;
 
     @GetMapping(produces = "application/json")
     public List<Leerling> listAll() {

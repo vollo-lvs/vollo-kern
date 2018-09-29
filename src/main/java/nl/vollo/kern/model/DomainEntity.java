@@ -1,12 +1,9 @@
 package nl.vollo.kern.model;
 
-import lombok.Getter;
-
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
-@Getter
 public enum DomainEntity {
     GEBRUIKER(Gebruiker.class),
     GROEP(Groep.class),
@@ -54,4 +51,15 @@ public enum DomainEntity {
         return this;
     }
 
+    public Class<? extends DomainObject> getDomainClass() {
+        return domainClass;
+    }
+
+    public List<DomainEntity> getAllowedEntities() {
+        return allowedEntities;
+    }
+
+    public List<String> getAllowedFields() {
+        return allowedFields;
+    }
 }

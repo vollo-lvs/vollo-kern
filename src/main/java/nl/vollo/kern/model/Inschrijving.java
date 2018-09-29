@@ -1,9 +1,5 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
@@ -11,10 +7,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "inschrijvingen")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.INSCHRIJVING)
 public class Inschrijving extends DomainObject {
 
@@ -45,4 +37,55 @@ public class Inschrijving extends DomainObject {
 	@ManyToOne(targetEntity = School.class)
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "ins_scl_fk"), nullable = false)
 	private School school;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Leerling getLeerling() {
+        return leerling;
+    }
+
+    public void setLeerling(Leerling leerling) {
+        this.leerling = leerling;
+    }
+
+    public Date getDatumInschrijving() {
+        return datumInschrijving;
+    }
+
+    public void setDatumInschrijving(Date datumInschrijving) {
+        this.datumInschrijving = datumInschrijving;
+    }
+
+    public Date getDatumUitschrijving() {
+        return datumUitschrijving;
+    }
+
+    public void setDatumUitschrijving(Date datumUitschrijving) {
+        this.datumUitschrijving = datumUitschrijving;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
 }

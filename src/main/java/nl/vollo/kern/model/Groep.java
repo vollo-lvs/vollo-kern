@@ -1,25 +1,16 @@
 package nl.vollo.kern.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "groepen")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.GROEP)
 public class Groep extends DomainObject {
 
@@ -54,4 +45,63 @@ public class Groep extends DomainObject {
 	@ManyToOne(targetEntity = School.class)
 	@JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "grp_scl_fk"), nullable = false)
 	private School school;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public int getNiveau() {
+        return niveau;
+    }
+
+    public void setNiveau(int niveau) {
+        this.niveau = niveau;
+    }
+
+    public List<GroepLeerling> getGroepLeerlingen() {
+        return groepLeerlingen;
+    }
+
+    public void setGroepLeerlingen(List<GroepLeerling> groepLeerlingen) {
+        this.groepLeerlingen = groepLeerlingen;
+    }
+
+    public List<GroepMedewerker> getGroepMedewerkers() {
+        return groepMedewerkers;
+    }
+
+    public void setGroepMedewerkers(List<GroepMedewerker> groepMedewerkers) {
+        this.groepMedewerkers = groepMedewerkers;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
 }

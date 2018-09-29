@@ -2,10 +2,6 @@ package nl.vollo.kern.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
-import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.repository.GebruikerRepository;
 import nl.vollo.kern.security.CookieService;
 import nl.vollo.kern.security.GebruikerAuthenticationService;
@@ -22,23 +18,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import static lombok.AccessLevel.PRIVATE;
 import static nl.vollo.kern.rest.RestUtils.errorHeader;
 
 @RestController
 @Api(value = "Gebruiker")
 @RequestMapping("/public/inloggen")
-@FieldDefaults(level = PRIVATE)
 final class InloggenCtl {
 
     @Autowired
-    GebruikerAuthenticationService authentication;
+    private GebruikerAuthenticationService authentication;
 
     @Autowired
-    GebruikerRepository gebruikerRepository;
+    private GebruikerRepository gebruikerRepository;
 
     @Autowired
-    CookieService cookieService;
+    private CookieService cookieService;
 
     @ApiOperation(value = "Inloggen.")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -57,16 +51,37 @@ final class InloggenCtl {
                 });
     }
 
-    @Getter
-    @Setter
     static class InloggenRequest {
         private String gebruikersnaam;
 
         private String wachtwoord;
+
+        public String getGebruikersnaam() {
+            return gebruikersnaam;
+        }
+
+        public void setGebruikersnaam(String gebruikersnaam) {
+            this.gebruikersnaam = gebruikersnaam;
+        }
+
+        public String getWachtwoord() {
+            return wachtwoord;
+        }
+
+        public void setWachtwoord(String wachtwoord) {
+            this.wachtwoord = wachtwoord;
+        }
     }
 
-    @Value
     static class InloggenResponse {
         private String token;
+
+        public InloggenResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
     }
 }

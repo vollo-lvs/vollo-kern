@@ -1,7 +1,6 @@
 package nl.vollo.kern.api;
 
 import io.swagger.annotations.Api;
-import lombok.extern.log4j.Log4j2;
 import nl.vollo.kern.model.Score;
 import nl.vollo.kern.repository.LeerlingRepository;
 import nl.vollo.kern.repository.ScoreRepository;
@@ -17,14 +16,13 @@ import java.util.List;
 @Api(value = "Score")
 @RestController
 @RequestMapping("/score")
-@Log4j2
 public class ScoreCtl {
 
     @Autowired
-    LeerlingRepository leerlingRepository;
+    private LeerlingRepository leerlingRepository;
 
     @Autowired
-    ScoreRepository scoreRepository;
+    private ScoreRepository scoreRepository;
 
     @GetMapping()
     public ResponseEntity<List<Score>> getScores(@RequestParam(name = "leerlingId") Long leerlingId) {

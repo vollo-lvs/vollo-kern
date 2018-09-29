@@ -1,25 +1,14 @@
 package nl.vollo.kern.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "scholen")
-@XmlRootElement
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.SCHOOL)
 public class School extends DomainObject {
 
@@ -56,4 +45,71 @@ public class School extends DomainObject {
 	@JsonIgnore
 	@OneToMany(mappedBy = "school", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
 	private List<Inschrijving> inschrijvingen = new ArrayList<>();
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
+    public School getHoortBij() {
+        return hoortBij;
+    }
+
+    public void setHoortBij(School hoortBij) {
+        this.hoortBij = hoortBij;
+    }
+
+    public List<School> getBijbehorendeScholen() {
+        return bijbehorendeScholen;
+    }
+
+    public void setBijbehorendeScholen(List<School> bijbehorendeScholen) {
+        this.bijbehorendeScholen = bijbehorendeScholen;
+    }
+
+    public List<Groep> getGroepen() {
+        return groepen;
+    }
+
+    public void setGroepen(List<Groep> groepen) {
+        this.groepen = groepen;
+    }
+
+    public List<Inschrijving> getInschrijvingen() {
+        return inschrijvingen;
+    }
+
+    public void setInschrijvingen(List<Inschrijving> inschrijvingen) {
+        this.inschrijvingen = inschrijvingen;
+    }
 }

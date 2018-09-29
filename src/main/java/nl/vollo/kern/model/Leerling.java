@@ -1,27 +1,16 @@
 package nl.vollo.kern.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "leerlingen")
-@XmlRootElement
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.LEERLING)
 public class Leerling extends DomainObject {
 
@@ -67,4 +56,87 @@ public class Leerling extends DomainObject {
 	@OneToMany(mappedBy = "leerling", targetEntity = Inschrijving.class, fetch = FetchType.LAZY)
     @OrderBy("datumInschrijving")
 	private List<Inschrijving> inschrijvingen = new ArrayList<>();
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getVoornamen() {
+        return voornamen;
+    }
+
+    public void setVoornamen(String voornamen) {
+        this.voornamen = voornamen;
+    }
+
+    public String getRoepnaam() {
+        return roepnaam;
+    }
+
+    public void setRoepnaam(String roepnaam) {
+        this.roepnaam = roepnaam;
+    }
+
+    public String getTussenvoegsel() {
+        return tussenvoegsel;
+    }
+
+    public void setTussenvoegsel(String tussenvoegsel) {
+        this.tussenvoegsel = tussenvoegsel;
+    }
+
+    public String getAchternaam() {
+        return achternaam;
+    }
+
+    public void setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+    }
+
+    public Date getGeboortedatum() {
+        return geboortedatum;
+    }
+
+    public void setGeboortedatum(Date geboortedatum) {
+        this.geboortedatum = geboortedatum;
+    }
+
+    public Geslacht getGeslacht() {
+        return geslacht;
+    }
+
+    public void setGeslacht(Geslacht geslacht) {
+        this.geslacht = geslacht;
+    }
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
+    public List<Inschrijving> getInschrijvingen() {
+        return inschrijvingen;
+    }
+
+    public void setInschrijvingen(List<Inschrijving> inschrijvingen) {
+        this.inschrijvingen = inschrijvingen;
+    }
 }

@@ -1,19 +1,11 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ouder_leerlingen")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.OUDER_LEERLING)
 public class OuderLeerling extends DomainObject {
 
@@ -36,4 +28,39 @@ public class OuderLeerling extends DomainObject {
     @ManyToOne(targetEntity = Leerling.class)
     @JoinColumn(name = "leerling_id", foreignKey = @ForeignKey(name = "oll_llg_fk"))
     private Leerling leerling;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Ouder getOuder() {
+        return ouder;
+    }
+
+    public void setOuder(Ouder ouder) {
+        this.ouder = ouder;
+    }
+
+    public Leerling getLeerling() {
+        return leerling;
+    }
+
+    public void setLeerling(Leerling leerling) {
+        this.leerling = leerling;
+    }
 }

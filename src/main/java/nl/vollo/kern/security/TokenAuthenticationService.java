@@ -1,27 +1,22 @@
 package nl.vollo.kern.security;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import nl.vollo.kern.model.Gebruiker;
 import nl.vollo.kern.repository.GebruikerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import static lombok.AccessLevel.PACKAGE;
-import static lombok.AccessLevel.PRIVATE;
-
 @Service
-@AllArgsConstructor(access = PACKAGE)
-@FieldDefaults(level = PRIVATE, makeFinal = true)
 final class TokenAuthenticationService implements GebruikerAuthenticationService {
-    @NonNull
-    JWTTokenService tokens;
-    @NonNull
-    GebruikerRepository gebruikers;
+
+    @Autowired
+    private JWTTokenService tokens;
+
+    @Autowired
+    private GebruikerRepository gebruikers;
 
     @Override
     public Optional<String> login(final String gebruikersnaam, final String wachtwoord) {

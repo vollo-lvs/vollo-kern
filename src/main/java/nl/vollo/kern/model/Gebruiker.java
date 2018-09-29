@@ -1,10 +1,6 @@
 package nl.vollo.kern.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -20,11 +15,6 @@ import java.util.stream.Stream;
 
 @Entity
 @Table(name = "gebruikers")
-@XmlRootElement
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.GEBRUIKER)
 public class Gebruiker extends DomainObject implements UserDetails {
 
@@ -102,4 +92,62 @@ public class Gebruiker extends DomainObject implements UserDetails {
         return true;
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getGebruikersnaam() {
+        return gebruikersnaam;
+    }
+
+    public void setGebruikersnaam(String gebruikersnaam) {
+        this.gebruikersnaam = gebruikersnaam;
+    }
+
+    public String getWachtwoord() {
+        return wachtwoord;
+    }
+
+    public void setWachtwoord(String wachtwoord) {
+        this.wachtwoord = wachtwoord;
+    }
+
+    public String getRollen() {
+        return rollen;
+    }
+
+    public void setRollen(String rollen) {
+        this.rollen = rollen;
+    }
+
+    public Medewerker getMedewerker() {
+        return medewerker;
+    }
+
+    public void setMedewerker(Medewerker medewerker) {
+        this.medewerker = medewerker;
+    }
+
+    public Ouder getOuder() {
+        return ouder;
+    }
+
+    public void setOuder(Ouder ouder) {
+        this.ouder = ouder;
+    }
 }

@@ -1,19 +1,11 @@
 package nl.vollo.kern.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import nl.vollo.kern.annotation.DomainType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "toetsen")
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = true)
 @DomainType(DomainEntity.TOETS)
 public class Toets extends DomainObject {
 
@@ -41,4 +33,47 @@ public class Toets extends DomainObject {
 
 	@Column(name = "omschrijving")
     private String omschrijving;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getSoort() {
+        return soort;
+    }
+
+    public void setSoort(String soort) {
+        this.soort = soort;
+    }
+
+    public SoortScore getSoortScore() {
+        return soortScore;
+    }
+
+    public void setSoortScore(SoortScore soortScore) {
+        this.soortScore = soortScore;
+    }
+
+    public String getOmschrijving() {
+        return omschrijving;
+    }
+
+    public void setOmschrijving(String omschrijving) {
+        this.omschrijving = omschrijving;
+    }
 }
