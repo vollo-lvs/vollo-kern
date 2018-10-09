@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public class CookieService {
 
-    final static String VOLLO_TOKEN_NAME = "vollo_token";
+    public static final String VOLLO_TOKEN_NAME = "vollo_token";
 
     public Cookie nieuweCookie(HttpServletRequest request, String token) {
         Cookie cookie = new Cookie(VOLLO_TOKEN_NAME, token);

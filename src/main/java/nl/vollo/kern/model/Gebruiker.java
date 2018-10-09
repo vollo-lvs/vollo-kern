@@ -64,6 +64,7 @@ public class Gebruiker extends DomainObject implements UserDetails {
         return wachtwoord;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return gebruikersnaam;
@@ -87,6 +88,7 @@ public class Gebruiker extends DomainObject implements UserDetails {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

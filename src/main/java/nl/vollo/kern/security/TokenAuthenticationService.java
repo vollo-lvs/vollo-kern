@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-final class TokenAuthenticationService implements GebruikerAuthenticationService {
+public class TokenAuthenticationService implements GebruikerAuthenticationService {
 
     @Autowired
     private JWTTokenService tokens;
