@@ -23,7 +23,7 @@ import static nl.vollo.kern.rest.RestUtils.errorHeader;
 @RestController
 @Api(value = "Gebruiker")
 @RequestMapping("/public/inloggen")
-final class InloggenCtl {
+public final class InloggenCtl {
 
     @Autowired
     private GebruikerAuthenticationService authentication;
@@ -51,10 +51,17 @@ final class InloggenCtl {
                 });
     }
 
-    static class InloggenRequest {
+    public static class InloggenRequest {
         private String gebruikersnaam;
 
         private String wachtwoord;
+
+        public InloggenRequest() {}
+
+        public InloggenRequest(String gebruikersnaam, String wachtwoord) {
+            this.gebruikersnaam = gebruikersnaam;
+            this.wachtwoord = wachtwoord;
+        }
 
         public String getGebruikersnaam() {
             return gebruikersnaam;
