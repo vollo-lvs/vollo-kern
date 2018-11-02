@@ -1,5 +1,7 @@
 package nl.vollo.kern.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import nl.vollo.kern.security.CookieService;
 import nl.vollo.kern.test.ApiTestService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,11 +22,12 @@ import java.io.IOException;
 import static nl.vollo.kern.test.JsonNodeIsEqualToTextMatcher.isTextNode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.startsWith;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("GebruikerCtlApi")
-class GebruikerCtlApiTest {
+class GebruikerCtlIT {
 
     @LocalServerPort
     private int port;
@@ -52,9 +56,10 @@ class GebruikerCtlApiTest {
         assertThat(json.get("gebruikersnaam"), isTextNode("m0"));
         assertThat(json.get("rollen"), isTextNode("ROLE_GEBRUIKER"));
         assertThat(json.get("_type"), isTextNode("GEBRUIKER"));
-        assertThat(json.get("medewerker").get("voornaam"), isTextNode("Kwaku"));
-        assertThat(json.get("medewerker").get("achternaam"), isTextNode("Oudejans"));
-        assertThat(json.get("medewerker").get("_type"), isTextNode("MEDEWERKER"));
+        JsonNode medewerker = json.get("medewerker");
+        assertThat(medewerker.get("voornaam"), isTextNode("Kwaku"));
+        assertThat(medewerker.get("achternaam"), isTextNode("Oudejans"));
+        assertThat(medewerker.get("_type"), isTextNode("MEDEWERKER"));
     }
 
     @Test
@@ -64,5 +69,18 @@ class GebruikerCtlApiTest {
                 apiTestService.testUrl("/gebruiker/ingelogd"), HttpMethod.GET, null, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
+    }
+
+    @Test
+    @DisplayName("uitloggen logt gebruiker uit en geeft lege cookie terug")
+    void uitloggen() {
+        var headers = apiTestService.inloggen();
+        var response = restTemplate.exchange(
+                apiTestService.testUrl("/gebruiker/uitloggen"), HttpMethod.POST,
+                new HttpEntity<Void>(headers), String.class);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
+        var cookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        assertThat(cookie, startsWith(CookieService.VOLLO_TOKEN_NAME + "=;"));
     }
 }

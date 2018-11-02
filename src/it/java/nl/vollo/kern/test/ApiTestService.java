@@ -40,7 +40,7 @@ public class ApiTestService {
         var inloggenRequest = new InloggenCtl.InloggenRequest("m0", "m0");
         var result = restTemplate.postForEntity(testUrl("/public/inloggen"), inloggenRequest, Void.class);
         assertThat("Fout bij inloggen", result.getStatusCode(), is(HttpStatus.NO_CONTENT));
-        var cookie = result.getHeaders().getFirst("Set-Cookie");
+        var cookie = result.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
         assertThat("Geen cookie ontvangen bij inloggen", cookie, notNullValue());
         assertThat("Geen token ontvangen bij inloggen", cookie.startsWith("vollo_token"), is(true));
 

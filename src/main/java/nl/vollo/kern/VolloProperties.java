@@ -11,6 +11,8 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "vollo.kern")
 public class VolloProperties {
 
+    static final String ISSUER = "Vollo";
+
     private final Jwt jwt = new Jwt();
 
     public Jwt getJwt() {
@@ -18,10 +20,10 @@ public class VolloProperties {
     }
 
     public static class Jwt {
-        String issuer = "Vollo";
-        Duration expiration = Duration.ofDays(1);
-        Duration clockSkew = Duration.ofMinutes(5);
-        String secret = "secret";
+        private String issuer = ISSUER;
+        private Duration expiration = Duration.ofDays(1);
+        private Duration clockSkew = Duration.ofMinutes(5);
+        private String secret = "secret";
 
         public String getIssuer() {
             return issuer;
