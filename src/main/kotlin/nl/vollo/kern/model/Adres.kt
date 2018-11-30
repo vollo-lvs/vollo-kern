@@ -5,7 +5,7 @@ import javax.persistence.Column
 import javax.persistence.Embeddable
 
 @Embeddable
-data class Adres(
+class Adres(
         @Column
         val straat: String?,
 

@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "leerlingen")
-data class Leerling(
+class Leerling(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -44,6 +44,6 @@ data class Leerling(
         @OneToMany(mappedBy = "leerling", targetEntity = Inschrijving::class, fetch = FetchType.LAZY)
         @OrderBy("datumInschrijving")
         var inschrijvingen: MutableList<Inschrijving> = ArrayList()
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.LEERLING
 }

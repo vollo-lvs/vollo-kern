@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "gebruikers")
-data class Gebruiker(
+class Gebruiker(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -42,7 +42,7 @@ data class Gebruiker(
         @JoinColumn(name = "ouder_id", foreignKey = ForeignKey(name = "geb_oud_fk"))
         val ouder: Ouder? = null
 
-) : DomainObject, UserDetails {
+) : DomainObject(), UserDetails {
 
     override val _type: DomainEntity get() = DomainEntity.GEBRUIKER
 

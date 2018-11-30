@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "ouders")
-data class Ouder(
+class Ouder(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -40,6 +40,6 @@ data class Ouder(
         @Embedded
         val adres: Adres? = null
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.OUDER
 }

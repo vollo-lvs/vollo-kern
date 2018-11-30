@@ -32,4 +32,12 @@ interface GroepRepository : JpaRepository<Groep, Long> {
     fun findByMedewerker(
             @Param("medewerker") medewerker: Medewerker,
             @Param("peildatum") peildatum: Date): List<Groep>
+
+    @Query("select g from Groep g "
+            + "where g in ( "
+            + "  select gl.groep from GroepLeerling gl "
+            + "  where gl.leerling.id = :id "
+            + ")"
+    )
+    fun findAllByLeerlingId(id: Long): List<Groep>;
 }

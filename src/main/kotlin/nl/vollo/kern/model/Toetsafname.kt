@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "toetsafnames")
-data class Toetsafname(
+class Toetsafname(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -28,6 +28,6 @@ data class Toetsafname(
         @Temporal(TemporalType.DATE)
         val datum: Date? = null
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.TOETSAFNAME
 }

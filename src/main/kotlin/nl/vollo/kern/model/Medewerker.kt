@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "medewerkers")
-data class Medewerker(
+class Medewerker(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -25,6 +25,6 @@ data class Medewerker(
         @Column(nullable = false)
         val achternaam: String
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.MEDEWERKER
 }

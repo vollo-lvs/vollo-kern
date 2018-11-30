@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "inschrijvingen")
-data class Inschrijving(
+class Inschrijving(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -33,6 +33,6 @@ data class Inschrijving(
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "ins_scl_fk"), nullable = false)
         val school: School
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.INSCHRIJVING
 }

@@ -12,3 +12,23 @@ GET {{base}}/mijn-groepen
 Cookie: {{token}}
 
 ###
+GET {{base}}/mijn-groepen/182/leerlingen
+Cookie: {{token}}
+
+###
+GET {{base}}/leerling/300
+Cookie: {{token}}
+
+###
+GET {{base}}/leerling/300/scores
+Cookie: {{token}}
+
+###
+GET {{base}}/leerling/300/ouders
+Cookie: {{token}}
+
+###
+GET {{base}}/leerling/300/groepen
+Cookie: {{token}}
+
+###

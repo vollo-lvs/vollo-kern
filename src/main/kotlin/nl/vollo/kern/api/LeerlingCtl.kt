@@ -3,9 +3,11 @@ package nl.vollo.kern.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mu.KotlinLogging
-import nl.vollo.kern.model.Geslacht
-import nl.vollo.kern.model.Leerling
+import nl.vollo.kern.model.*
+import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
+import nl.vollo.kern.repository.OuderRepository
+import nl.vollo.kern.repository.ScoreRepository
 import org.apache.commons.lang3.RandomStringUtils.randomAlphabetic
 import org.apache.commons.lang3.RandomUtils
 import org.apache.commons.lang3.time.DateUtils
@@ -24,6 +26,15 @@ class LeerlingCtl {
 
     @Autowired
     private lateinit var leerlingRepository: LeerlingRepository
+
+    @Autowired
+    private lateinit var scoreRepository: ScoreRepository
+
+    @Autowired
+    private lateinit var ouderRepository: OuderRepository
+
+    @Autowired
+    private lateinit var groepRepository: GroepRepository
 
     @GetMapping(produces = ["application/json"])
     fun listAll(): List<Leerling> = leerlingRepository.findAll()
@@ -67,10 +78,26 @@ class LeerlingCtl {
 
     @GetMapping(value = ["/{id:[0-9][0-9]*}"], produces = ["application/json"])
     fun findById(@PathVariable("id") id: Long): ResponseEntity<Leerling> {
+        val leerling = leerlingRepository.findById(id)
         return leerlingRepository
                 .findById(id)
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
+    }
+
+    @GetMapping(value = ["/{id:[0-9][0-9]*}/scores"], produces = ["application/json"])
+    fun findScoresById(@PathVariable("id") id: Long): ResponseEntity<List<Score>> {
+        return ResponseEntity(scoreRepository.findAllByLeerlingId(id), HttpStatus.OK)
+    }
+
+    @GetMapping(value = ["/{id:[0-9][0-9]*}/ouders"], produces = ["application/json"])
+    fun findOudersById(@PathVariable("id") id: Long): ResponseEntity<List<Ouder>> {
+        return ResponseEntity(ouderRepository.findAllByLeerlingId(id), HttpStatus.OK)
+    }
+
+    @GetMapping(value = ["/{id:[0-9][0-9]*}/groepen"], produces = ["application/json"])
+    fun findGroepenById(@PathVariable("id") id: Long): ResponseEntity<List<Groep>> {
+        return ResponseEntity(groepRepository.findAllByLeerlingId(id), HttpStatus.OK)
     }
 
     @PutMapping(value = ["/{id:[0-9][0-9]*}"], consumes = ["application/json"])

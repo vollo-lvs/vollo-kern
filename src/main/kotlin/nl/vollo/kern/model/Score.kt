@@ -1,11 +1,12 @@
 package nl.vollo.kern.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
 @Table(name = "scores")
-data class Score(
+class Score(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -17,6 +18,7 @@ data class Score(
         @Column(name = "version")
         override val version: Int = 0,
 
+        @JsonIgnore
         @ManyToOne(targetEntity = Leerling::class)
         @JoinColumn(name = "leerling_id", foreignKey = ForeignKey(name = "sco_llg_fk"))
         val leerling: Leerling,
@@ -31,6 +33,6 @@ data class Score(
         @Column(name = "cijfer_score")
         val cijferScore: BigDecimal? = null
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.SCORE
 }

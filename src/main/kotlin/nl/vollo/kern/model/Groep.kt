@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "groepen")
-data class Groep(
+class Groep(
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
@@ -43,6 +43,6 @@ data class Groep(
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "grp_scl_fk"), nullable = false)
         val school: School
 
-) : DomainObject {
+) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.GROEP
 }
