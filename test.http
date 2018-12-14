@@ -1,3 +1,6 @@
+### Testdata
+POST {{base}}/public/testdata
+
 ### Authenticate
 POST {{base}}/public/inloggen
 Content-Type: application/json

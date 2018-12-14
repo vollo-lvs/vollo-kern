@@ -1,0 +1,221 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="danny" id="0.0.0-1-sequences">
+        <createSequence sequenceName="vollo_seq"/>
+    </changeSet>
+    <changeSet author="danny" id="0.0.0-2-tables">
+        <createTable tableName="gebruikers">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="gebruikers_pkey"/>
+            </column>
+            <column name="gebruikersnaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollen" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="wachtwoord" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="medewerker_id" type="BIGINT"/>
+            <column name="ouder_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="groep_leerlingen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="groep_leerlingen_pkey"/>
+            </column>
+            <column name="datum_begin" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datum_einde" type="date"/>
+            <column name="version" type="INTEGER"/>
+            <column name="groep_id" type="BIGINT"/>
+            <column name="leerling_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="groep_medewerkers">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="groep_medewerkers_pkey"/>
+            </column>
+            <column name="datum_begin" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datum_einde" type="date"/>
+            <column name="version" type="INTEGER"/>
+            <column name="groep_id" type="BIGINT"/>
+            <column name="medewerker_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="groepen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="groepen_pkey"/>
+            </column>
+            <column name="naam" type="VARCHAR(255)"/>
+            <column name="niveau" type="INTEGER"/>
+            <column name="version" type="INTEGER"/>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="inschrijvingen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="inschrijvingen_pkey"/>
+            </column>
+            <column name="datum_inschrijving" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datum_uitschrijving" type="date"/>
+            <column name="version" type="INTEGER"/>
+            <column name="leerling_id" type="BIGINT"/>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="leerlingen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="leerlingen_pkey"/>
+            </column>
+            <column name="achternaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="huisnummer" type="VARCHAR(10)"/>
+            <column name="land" type="VARCHAR(255)"/>
+            <column name="plaats" type="VARCHAR(255)"/>
+            <column name="postcode" type="VARCHAR(10)"/>
+            <column name="straat" type="VARCHAR(255)"/>
+            <column name="toevoeging" type="VARCHAR(10)"/>
+            <column name="geboortedatum" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="geslacht" type="VARCHAR(255)"/>
+            <column name="roepnaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tussenvoegsel" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="voornamen" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="medewerkers">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="medewerkers_pkey"/>
+            </column>
+            <column name="achternaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tussenvoegsel" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="voornaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="ouder_leerlingen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ouder_leerlingen_pkey"/>
+            </column>
+            <column name="version" type="INTEGER"/>
+            <column name="leerling_id" type="BIGINT"/>
+            <column name="ouder_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="ouders">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ouders_pkey"/>
+            </column>
+            <column name="achternaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="huisnummer" type="VARCHAR(10)"/>
+            <column name="land" type="VARCHAR(255)"/>
+            <column name="plaats" type="VARCHAR(255)"/>
+            <column name="postcode" type="VARCHAR(10)"/>
+            <column name="straat" type="VARCHAR(255)"/>
+            <column name="toevoeging" type="VARCHAR(10)"/>
+            <column name="geboortedatum" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="geslacht" type="VARCHAR(255)"/>
+            <column name="tussenvoegsel" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="voornaam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="scholen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="scholen_pkey"/>
+            </column>
+            <column name="huisnummer" type="VARCHAR(10)"/>
+            <column name="land" type="VARCHAR(255)"/>
+            <column name="plaats" type="VARCHAR(255)"/>
+            <column name="postcode" type="VARCHAR(10)"/>
+            <column name="straat" type="VARCHAR(255)"/>
+            <column name="toevoeging" type="VARCHAR(10)"/>
+            <column name="naam" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INTEGER"/>
+            <column name="hoort_bij_school_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="scores">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="scores_pkey"/>
+            </column>
+            <column name="cijfer_score" type="numeric(19, 2)"/>
+            <column name="letter_score" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="leerling_id" type="BIGINT"/>
+            <column name="toetsafname_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="toetsafnames">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="toetsafnames_pkey"/>
+            </column>
+            <column name="datum" type="date"/>
+            <column name="omschrijving" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+            <column name="toets_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="toetsen">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="toetsen_pkey"/>
+            </column>
+            <column name="omschrijving" type="VARCHAR(255)"/>
+            <column name="soort" type="VARCHAR(255)"/>
+            <column name="soort_score" type="VARCHAR(255)"/>
+            <column name="version" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danny" id="0.0.0-3-foreign-keys">
+        <addForeignKeyConstraint baseColumnNames="medewerker_id" baseTableName="gebruikers" constraintName="geb_mdw_fk"
+                                 referencedColumnNames="id" referencedTableName="medewerkers"/>
+        <addForeignKeyConstraint baseColumnNames="ouder_id" baseTableName="gebruikers" constraintName="geb_oud_fk"
+                                 referencedColumnNames="id" referencedTableName="ouders"/>
+        <addForeignKeyConstraint baseColumnNames="groep_id" baseTableName="groep_leerlingen" constraintName="gll_grp_fk"
+                                 referencedColumnNames="id" referencedTableName="groepen"/>
+        <addForeignKeyConstraint baseColumnNames="leerling_id" baseTableName="groep_leerlingen"
+                                 constraintName="gll_llg_fk" referencedColumnNames="id" referencedTableName="leerlingen"/>
+        <addForeignKeyConstraint baseColumnNames="groep_id" baseTableName="groep_medewerkers"
+                                 constraintName="gmw_grp_fk" referencedColumnNames="id" referencedTableName="groepen"/>
+        <addForeignKeyConstraint baseColumnNames="medewerker_id" baseTableName="groep_medewerkers"
+                                 constraintName="gmw_mdw_fk" referencedColumnNames="id" referencedTableName="medewerkers"/>
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="groepen" constraintName="grp_scl_fk"
+                                 referencedColumnNames="id" referencedTableName="scholen"/>
+        <addForeignKeyConstraint baseColumnNames="leerling_id" baseTableName="inschrijvingen"
+                                 constraintName="ins_llg_fk" referencedColumnNames="id" referencedTableName="leerlingen"/>
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="inschrijvingen" constraintName="ins_scl_fk"
+                                 referencedColumnNames="id" referencedTableName="scholen"/>
+        <addForeignKeyConstraint baseColumnNames="leerling_id" baseTableName="ouder_leerlingen"
+                                 constraintName="oll_llg_fk" referencedColumnNames="id" referencedTableName="leerlingen"/>
+        <addForeignKeyConstraint baseColumnNames="ouder_id" baseTableName="ouder_leerlingen" constraintName="oll_oud_fk"
+                                 referencedColumnNames="id" referencedTableName="ouders"/>
+        <addForeignKeyConstraint baseColumnNames="hoort_bij_school_id" baseTableName="scholen"
+                                 constraintName="scl_scl_fk" referencedColumnNames="id" referencedTableName="scholen"/>
+        <addForeignKeyConstraint baseColumnNames="leerling_id" baseTableName="scores" constraintName="sco_llg_fk"
+                                 referencedColumnNames="id" referencedTableName="leerlingen"/>
+        <addForeignKeyConstraint baseColumnNames="toetsafname_id" baseTableName="scores" constraintName="sco_tan_fk"
+                                 referencedColumnNames="id" referencedTableName="toetsafnames"/>
+        <addForeignKeyConstraint baseColumnNames="toets_id" baseTableName="toetsafnames" constraintName="tan_tts_fk"
+                                 referencedColumnNames="id" referencedTableName="toetsen"/>
+    </changeSet>
+</databaseChangeLog>
