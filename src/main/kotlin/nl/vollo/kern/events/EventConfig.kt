@@ -6,32 +6,43 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
+import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter
 import org.springframework.jms.support.converter.MessageType
 import javax.jms.ConnectionFactory
+import javax.jms.DeliveryMode
 
 @Configuration
 @EnableJms
 class EventConfig {
 
     @Bean
-    fun myFactory(connectionFactory: ConnectionFactory,
+    fun volloJmsFactory(connectionFactory: ConnectionFactory,
                   configurer: DefaultJmsListenerContainerFactoryConfigurer
     ): JmsListenerContainerFactory<*> {
-        val factory = DefaultJmsListenerContainerFactory();
-        // This provides all boot's default to this factory, including the message converter
-        configurer.configure(factory, connectionFactory);
-        // You could still override some of Boot's default if necessary.
-        factory.setPubSubDomain(true);
-        return factory;
+        return DefaultJmsListenerContainerFactory().apply {
+            configurer.configure(this, connectionFactory);
+            this.setPubSubDomain(true)
+            this.setClientId("vollo-kern")
+            this.setSubscriptionDurable(true)
+        }
     }
 
-    @Bean // Serialize message content to json using TextMessage
+    @Bean
     fun jacksonJmsMessageConverter(): MessageConverter {
-        val converter = MappingJackson2MessageConverter();
-        converter.setTargetType(MessageType.TEXT);
-        converter.setTypeIdPropertyName("_type");
-        return converter;
+        return MappingJackson2MessageConverter().apply {
+            this.setTargetType(MessageType.TEXT)
+            this.setTypeIdPropertyName("_type")
+        }
+    }
+
+    @Bean
+    fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
+        return JmsTemplate(connectionFactory).apply {
+            this.setDeliveryPersistent(true)
+            this.deliveryMode = DeliveryMode.PERSISTENT
+            this.isPubSubDomain = true
+        }
     }
 }
