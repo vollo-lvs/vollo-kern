@@ -3,6 +3,8 @@ package nl.vollo.kern.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mu.KotlinLogging
+import nl.vollo.kern.events.EventService
+import nl.vollo.kern.events.LeerlingOpgehaald
 import nl.vollo.kern.model.*
 import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
@@ -35,6 +37,9 @@ class LeerlingCtl {
 
     @Autowired
     private lateinit var groepRepository: GroepRepository
+
+    @Autowired
+    private lateinit var eventService: EventService
 
     @GetMapping(produces = ["application/json"])
     fun listAll(): List<Leerling> = leerlingRepository.findAll()
@@ -81,6 +86,7 @@ class LeerlingCtl {
         val leerling = leerlingRepository.findById(id)
         return leerlingRepository
                 .findById(id)
+                .map { eventService.send(LeerlingOpgehaald(it)); it }
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
     }
