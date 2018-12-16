@@ -3,8 +3,8 @@ package nl.vollo.kern.api
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mu.KotlinLogging
-import nl.vollo.kern.events.EventService
-import nl.vollo.kern.events.LeerlingOpgehaald
+import nl.vollo.events.EventService
+import nl.vollo.events.kern.LeerlingOpgehaald
 import nl.vollo.kern.model.*
 import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
@@ -83,10 +83,9 @@ class LeerlingCtl {
 
     @GetMapping(value = ["/{id:[0-9][0-9]*}"], produces = ["application/json"])
     fun findById(@PathVariable("id") id: Long): ResponseEntity<Leerling> {
-        val leerling = leerlingRepository.findById(id)
         return leerlingRepository
                 .findById(id)
-                .map { eventService.send(LeerlingOpgehaald(it)); it }
+                .map { eventService.send(LeerlingOpgehaald().apply { this.id = it.id; this.geslacht = it.geslacht.toString() }); it }
                 .map { ResponseEntity(it, HttpStatus.OK) }
                 .orElse(ResponseEntity(HttpStatus.NOT_FOUND))
     }
