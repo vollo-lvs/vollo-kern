@@ -1,48 +1,35 @@
 package nl.vollo.kern.events
 
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
+import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.jms.annotation.EnableJms
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory
-import org.springframework.jms.config.JmsListenerContainerFactory
-import org.springframework.jms.core.JmsTemplate
-import org.springframework.jms.support.converter.MappingJackson2MessageConverter
-import org.springframework.jms.support.converter.MessageConverter
-import org.springframework.jms.support.converter.MessageType
-import javax.jms.ConnectionFactory
-import javax.jms.DeliveryMode
+import org.springframework.kafka.annotation.EnableKafka
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
-@EnableJms
+@EnableKafka
 class EventConfig {
 
-    @Bean
-    fun volloJmsFactory(connectionFactory: ConnectionFactory,
-                  configurer: DefaultJmsListenerContainerFactoryConfigurer
-    ): JmsListenerContainerFactory<*> {
-        return DefaultJmsListenerContainerFactory().apply {
-            configurer.configure(this, connectionFactory);
-            this.setPubSubDomain(true)
-            this.setClientId("vollo-kern")
-            this.setSubscriptionDurable(true)
-        }
-    }
+//    @Bean
+//    fun producerFactory(): ProducerFactory<String, Any> {
+//        val configProps = HashMap<String, Any>();
+//        configProps.put(
+//                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+//                "localhost:2181");
+//        configProps.put(
+//                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+//                StringSerializer::class.java);
+//        configProps.put(
+//                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+//                StringSerializer::class.java);
+//        return DefaultKafkaProducerFactory(configProps);
+//    }
 
-    @Bean
-    fun jacksonJmsMessageConverter(): MessageConverter {
-        return MappingJackson2MessageConverter().apply {
-            this.setTargetType(MessageType.TEXT)
-            this.setTypeIdPropertyName("_type")
-        }
-    }
-
-    @Bean
-    fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
-        return JmsTemplate(connectionFactory).apply {
-            this.setDeliveryPersistent(true)
-            this.deliveryMode = DeliveryMode.PERSISTENT
-            this.isPubSubDomain = true
-        }
-    }
+//    @Bean
+//    fun kafkaTemplate(producerFactory: ProducerFactory<String, Any>): KafkaTemplate<String, Any> {
+//        return KafkaTemplate(producerFactory);
+//    }
 }

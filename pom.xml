@@ -107,12 +107,8 @@
 
         <!-- ActiveMQ -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-activemq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
         <!-- Apache Commons -->
@@ -347,6 +343,11 @@
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>2.2.2.RELEASE</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
