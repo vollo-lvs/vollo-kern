@@ -19,7 +19,7 @@ GET {{base}}/mijn-groepen/182/leerlingen
 Cookie: {{token}}
 
 ###
-GET {{base}}/leerling/300
+GET {{base}}/leerling/891
 Cookie: {{token}}
 
 ###

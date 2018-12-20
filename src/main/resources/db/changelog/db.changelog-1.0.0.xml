@@ -3,6 +3,9 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <include file="db.changelog-0.0.0.xml" relativeToChangelogFile="true"/>
-    <include file="db.changelog-1.0.0.xml" relativeToChangelogFile="true"/>
+    <changeSet author="danny" id="1.0.0-1">
+        <addColumn tableName="leerlingen">
+            <column name="foto" type="bytea"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

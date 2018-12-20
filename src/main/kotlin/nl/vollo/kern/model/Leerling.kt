@@ -46,4 +46,7 @@ class Leerling(
         var inschrijvingen: MutableList<Inschrijving> = ArrayList()
 ) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.LEERLING
+
+    @Column
+    var foto: ByteArray? = null
 }
