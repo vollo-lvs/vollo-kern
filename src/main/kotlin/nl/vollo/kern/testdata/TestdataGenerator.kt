@@ -20,7 +20,7 @@ import javax.persistence.PersistenceException
 private val log = KotlinLogging.logger {}
 
 @Component
-class TestdataGenerator() : CommandLineRunner {
+class TestdataGenerator : CommandLineRunner {
     private var aantalScholen: Int = 0
     private var aantalGroepen: Int = 0
     private var aantalLeerlingenMin: Int = 0
@@ -38,7 +38,7 @@ class TestdataGenerator() : CommandLineRunner {
     private lateinit var jongensnamen: List<String>
     private lateinit var tussenvoegsels: List<String>
 
-    private lateinit var toetsen: List<Toetsafname>
+    private lateinit var toetsafnames: List<Toetsafname>
 
     @PersistenceContext
     lateinit var em: EntityManager
@@ -215,7 +215,7 @@ class TestdataGenerator() : CommandLineRunner {
     }
 
     private fun genererenScores(leerling: Leerling) {
-        toetsen.forEach { toetsafname ->
+        toetsafnames.forEach { toetsafname ->
             val score = Score(
                     leerling = leerling,
                     toetsafname = toetsafname,
@@ -235,30 +235,30 @@ class TestdataGenerator() : CommandLineRunner {
     }
 
     private fun genererenToetsen() {
-        toetsen = Arrays.asList(
-                createToets("Centraal taal", SoortScore.SCORE_500, "Centraal"),
-                createToets("Centraal rekenen", SoortScore.SCORE_500, "Centraal"),
-                createToets("Dictee", SoortScore.CIJFER_1_10, "School"),
-                createToets("Hoofdrekenen", SoortScore.CIJFER_1_10, "School"),
-                createToets("Grammatica", SoortScore.CIJFER_1_10, "School")
-        )
+        toetsafnames = createToetsafnames("Centraal taal", SoortScore.SCORE_500, "Centraal") +
+                createToetsafnames("Centraal rekenen", SoortScore.SCORE_500, "Centraal") +
+                createToetsafnames("Dictee", SoortScore.CIJFER_1_10, "School") +
+                createToetsafnames("Hoofdrekenen", SoortScore.CIJFER_1_10, "School") +
+                createToetsafnames("Grammatica", SoortScore.CIJFER_1_10, "School")
     }
 
-    private fun createToets(omschrijving: String, soortScore: SoortScore, soort: String): Toetsafname {
+    private fun createToetsafnames(omschrijving: String, soortScore: SoortScore, soort: String): List<Toetsafname> {
         val toets = Toets(
                 omschrijving = omschrijving,
                 soortScore = soortScore,
                 soort = soort
         )
         toetsRepository.save(toets)
-        val toetsafname = Toetsafname(
-                toets = toets,
-                datum = DateUtils.addDays(
-                        DateUtils.addMonths(datumBeginSchooljaar, randomInt(1, 6)),
-                        randomInt(1, 27))
-        )
-        toetsafnameRepository.save(toetsafname)
-        return toetsafname
+        return IntRange(1, randomInt(1, 5)).map {
+            val toetsafname = Toetsafname(
+                    toets = toets,
+                    datum = DateUtils.addDays(
+                            DateUtils.addMonths(datumBeginSchooljaar, randomInt(1, 6)),
+                            randomInt(1, 27))
+            )
+            toetsafnameRepository.save(toetsafname)
+            toetsafname
+        }
     }
 
     private fun genererenInschrijving(leerling: Leerling, school: School, laatsteGroep: Groep) {
