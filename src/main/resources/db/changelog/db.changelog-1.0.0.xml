@@ -8,4 +8,28 @@
             <column name="foto" type="bytea"/>
         </addColumn>
     </changeSet>
+    <changeSet author="danny" id="1.0.0-2">
+        <createTable tableName="notities">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="notities_pkey"/>
+            </column>
+            <column name="version" type="INTEGER"/>
+            <column name="tekst" type="TEXT"/>
+            <column name="medewerker_id" type="BIGINT"/>
+            <column name="leerling_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="medewerker_id" baseTableName="notities" constraintName="nti_mdw_fk"
+                                 referencedColumnNames="id" referencedTableName="medewerkers"/>
+        <addForeignKeyConstraint baseColumnNames="leerling_id" baseTableName="notities" constraintName="nti_llg_fk"
+                                 referencedColumnNames="id" referencedTableName="leerlingen"/>
+    </changeSet>
+    <changeSet author="danny" id="1.0.0-3">
+        <addColumn tableName="notities">
+            <column name="datum" type="timestamp"/>
+        </addColumn>
+        <addNotNullConstraint tableName="notities" columnName="datum"/>
+        <addNotNullConstraint tableName="notities" columnName="tekst"/>
+        <addNotNullConstraint tableName="notities" columnName="medewerker_id"/>
+        <addNotNullConstraint tableName="notities" columnName="leerling_id"/>
+    </changeSet>
 </databaseChangeLog>

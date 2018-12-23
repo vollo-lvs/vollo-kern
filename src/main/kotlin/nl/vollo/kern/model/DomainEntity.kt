@@ -10,6 +10,7 @@ enum class DomainEntity(val domainClass: KClass<out DomainObject>) {
     INSCHRIJVING(Inschrijving::class),
     LEERLING(Leerling::class),
     MEDEWERKER(Medewerker::class),
+    NOTITIE(Notitie::class),
     OUDER(Ouder::class),
     OUDER_LEERLING(OuderLeerling::class),
     SCHOOL(School::class),

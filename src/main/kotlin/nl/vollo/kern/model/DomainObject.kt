@@ -14,7 +14,8 @@ import java.io.Serializable
         JsonSubTypes.Type(name = "SCHOOL", value = School::class),
         JsonSubTypes.Type(name = "MEDEWERKER", value = Medewerker::class),
         JsonSubTypes.Type(name = "INSCHRIJVING", value = Inschrijving::class),
-        JsonSubTypes.Type(name = "GEBRUIKER", value = Gebruiker::class)
+        JsonSubTypes.Type(name = "GEBRUIKER", value = Gebruiker::class),
+        JsonSubTypes.Type(name = "NOTITIE", value = Notitie::class)
 )
 abstract class DomainObject : Serializable, Comparable<DomainObject> {
 
