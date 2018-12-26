@@ -7,6 +7,7 @@ import nl.vollo.kern.model.Notitie
 import nl.vollo.kern.repository.LeerlingRepository
 import nl.vollo.kern.repository.NotitieRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,7 +20,7 @@ private val log = KotlinLogging.logger {}
 @Api(value = "Notitie")
 @RestController()
 @RequestMapping("/notitie")
-@PreAuthorize("hasRole('GEBRUIKER')")
+@PreAuthorize("hasRole('MEDEWERKER')")
 class NotitieCtl {
 
     @Autowired
@@ -29,8 +30,13 @@ class NotitieCtl {
     private lateinit var leerlingRepository: LeerlingRepository
 
     @GetMapping(path = ["/leerling/{leerlingId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getLeerlingNotities(@PathVariable(name = "leerlingId") leerlingId: Long): ResponseEntity<List<Notitie>> {
-        return ResponseEntity.ok(notitieRepository.findByLeerlingId(leerlingId))
+    fun getLeerlingNotities(@PathVariable(name = "leerlingId") leerlingId: Long,
+                            @AuthenticationPrincipal gebruiker: Gebruiker): ResponseEntity<List<Notitie>> {
+        return if (gebruiker.medewerker != null) {
+            ResponseEntity.ok(notitieRepository.findByLeerlingIdVoorMedewerker(leerlingId, gebruiker.medewerker))
+        } else {
+            ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        }
     }
 
     @PostMapping(
@@ -41,6 +47,9 @@ class NotitieCtl {
             @PathVariable(name = "leerlingId") leerlingId: Long,
             @RequestBody notitie: Notitie,
             @AuthenticationPrincipal gebruiker: Gebruiker): ResponseEntity<Notitie> {
+        if (gebruiker.medewerker == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        }
         // TODO Check dat leerling in groep van medewerker zit?
         return leerlingRepository.findById(leerlingId)
                 .map { leerling ->

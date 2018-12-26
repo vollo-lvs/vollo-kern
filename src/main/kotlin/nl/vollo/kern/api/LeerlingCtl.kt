@@ -5,7 +5,11 @@ import io.swagger.annotations.ApiOperation
 import mu.KotlinLogging
 import nl.vollo.events.EventService
 import nl.vollo.events.kern.LeerlingOpgehaald
-import nl.vollo.kern.model.*
+import nl.vollo.kern.model.Groep
+import nl.vollo.kern.model.Leerling
+import nl.vollo.kern.model.Ouder
+import nl.vollo.kern.model.Score
+import nl.vollo.kern.model.enums.Geslacht
 import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
 import nl.vollo.kern.repository.OuderRepository

@@ -32,4 +32,10 @@
         <addNotNullConstraint tableName="notities" columnName="medewerker_id"/>
         <addNotNullConstraint tableName="notities" columnName="leerling_id"/>
     </changeSet>
+    <changeSet author="danny" id="1.0.0-4">
+        <addColumn tableName="notities">
+            <column name="notitie_niveau" type="VARCHAR(40)" defaultValue="PERSOONLIJK"/>
+        </addColumn>
+        <addNotNullConstraint tableName="notities" columnName="notitie_niveau"/>
+    </changeSet>
 </databaseChangeLog>

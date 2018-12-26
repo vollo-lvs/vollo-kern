@@ -2,6 +2,8 @@ package nl.vollo.kern.testdata
 
 import mu.KotlinLogging
 import nl.vollo.kern.model.*
+import nl.vollo.kern.model.enums.Geslacht
+import nl.vollo.kern.model.enums.SoortScore
 import nl.vollo.kern.repository.*
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.ArrayUtils
@@ -299,7 +301,7 @@ class TestdataGenerator : CommandLineRunner {
                 gebruikersnaam = "m$i",
                 wachtwoord = "m$i",
                 medewerker = m,
-                rollen = "ROLE_GEBRUIKER")
+                rollen = "ROLE_GEBRUIKER,ROLE_MEDEWERKER")
         gebruikerRepository.save(g)
         return m
     }

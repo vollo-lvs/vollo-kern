@@ -1,5 +1,6 @@
 package nl.vollo.kern.model;
 
+import nl.vollo.kern.model.enums.Geslacht
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull

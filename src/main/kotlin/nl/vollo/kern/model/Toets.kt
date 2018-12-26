@@ -1,5 +1,6 @@
 package nl.vollo.kern.model;
 
+import nl.vollo.kern.model.enums.SoortScore
 import javax.persistence.*
 
 @Entity

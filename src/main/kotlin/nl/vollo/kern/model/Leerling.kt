@@ -1,6 +1,7 @@
 package nl.vollo.kern.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import nl.vollo.kern.model.enums.Geslacht
 import java.util.*
 import javax.persistence.*
 

@@ -1,7 +1,9 @@
 package nl.vollo.kern.model
 
+import nl.vollo.kern.model.enums.NotitieNiveau
 import java.util.*
 import javax.persistence.*
+import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "notities")
@@ -17,18 +19,27 @@ class Notitie(
         override val version: Int = 0,
 
         @Column(nullable = false)
+        @NotNull
         var tekst: String? = null,
 
         @Column(nullable = false)
+        @NotNull
         @Temporal(TemporalType.TIMESTAMP)
         var datum: Date? = null,
 
+        @Column(name = "notitie_niveau", nullable = false)
+        @NotNull
+        @Enumerated(EnumType.STRING)
+        var notitieNiveau: NotitieNiveau? = null,
+
         @ManyToOne(targetEntity = Leerling::class)
         @JoinColumn(name = "leerling_id", foreignKey = ForeignKey(name = "nti_llg_fk"))
+        @NotNull
         var leerling: Leerling? = null,
 
         @ManyToOne(targetEntity = Medewerker::class)
         @JoinColumn(name = "medewerker_id", foreignKey = ForeignKey(name = "nti_mdw_fk"))
+        @NotNull
         var medewerker: Medewerker? = null
 
 ) : DomainObject() {
