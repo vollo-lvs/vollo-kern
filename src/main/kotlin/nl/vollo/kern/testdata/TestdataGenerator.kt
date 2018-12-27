@@ -78,6 +78,9 @@ class TestdataGenerator : CommandLineRunner {
     @Autowired
     lateinit var toetsafnameRepository: ToetsafnameRepository
 
+    @Autowired
+    lateinit var notitieRepository: NotitieRepository
+
     @Throws(Exception::class)
     override fun run(vararg args: String) {
         if (ArrayUtils.contains(args, "--genereer-testdata")) {
@@ -148,7 +151,7 @@ class TestdataGenerator : CommandLineRunner {
         for (i in 1..aantalGroepen) {
             val g = Groep(
                     school = school,
-                    niveau = 1,
+                    niveau = i,
                     naam = i.toString()
             )
             groepRepository.save(g)
@@ -406,6 +409,7 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun truncateTables() {
+        notitieRepository.deleteAllInBatch()
         scoreRepository.deleteAllInBatch()
         toetsafnameRepository.deleteAllInBatch()
         toetsRepository.deleteAllInBatch()
