@@ -10,11 +10,11 @@ class OuderLeerling(
         @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vollo_seq")
         @SequenceGenerator(name = "vollo_seq", sequenceName = "vollo_seq", allocationSize = 1)
         @Column(name = "id", updatable = false, nullable = false)
-        override val id: Long?,
+        override val id: Long? = null,
 
         @Version
         @Column(name = "version")
-        override val version: Int,
+        override val version: Int = 0,
 
         @ManyToOne(targetEntity = Ouder::class)
         @JoinColumn(name = "ouder_id", foreignKey = ForeignKey(name = "oll_oud_fk"))

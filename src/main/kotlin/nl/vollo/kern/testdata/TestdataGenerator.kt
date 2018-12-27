@@ -81,6 +81,12 @@ class TestdataGenerator : CommandLineRunner {
     @Autowired
     lateinit var notitieRepository: NotitieRepository
 
+    @Autowired
+    lateinit var ouderRepository: OuderRepository
+
+    @Autowired
+    lateinit var ouderLeerlingRepository: OuderLeerlingRepository
+
     @Throws(Exception::class)
     override fun run(vararg args: String) {
         if (ArrayUtils.contains(args, "--genereer-testdata")) {
@@ -116,6 +122,7 @@ class TestdataGenerator : CommandLineRunner {
         jongensnamen = inlezenTestdata("jongensnamen")
         tussenvoegsels = inlezenTestdata("tussenvoegsels")
         genererenScholen(null, aantalScholen)
+        genererenOuders()
     }
 
     private fun genererenScholen(hoortBij: School?, aantalScholen: Int) {
@@ -162,23 +169,39 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun genererenGroepLeerlingen(g: Groep, schoolPlaatsnamen: List<String>): List<GroepLeerling> {
-        val groepLeerlingen = ArrayList<GroepLeerling>()
-        for (i in 0 until randomInt(aantalLeerlingenMin, aantalLeerlingenMax)) {
-            val leerling = genererenLeerling(g, schoolPlaatsnamen)
-            val gl = GroepLeerling(
+        val leerlingen = IntRange(0, randomInt(aantalLeerlingenMin, aantalLeerlingenMax)).map {
+            genererenLeerling(g, schoolPlaatsnamen)
+        }
+        leerlingRepository.saveAll(leerlingen)
+        val groepLeerlingen = leerlingen.map {
+            GroepLeerling(
                     groep = g,
                     datumBegin = datumBeginSchooljaar,
-                    leerling = leerling
+                    leerling = it
             )
-            groepLeerlingRepository.save(gl)
-            g.groepLeerlingen.add(gl)
-            koppelLeerlingAanVoorgaandeGroepen(g, leerling)
         }
+        groepLeerlingRepository.saveAll(groepLeerlingen)
+        g.groepLeerlingen.addAll(groepLeerlingen)
+        leerlingen.forEach {
+            koppelLeerlingAanVoorgaandeGroepen(g, it)
+        }
+        val inschrijvingen = leerlingen.map {
+            genererenInschrijving(it, g.school, g)
+        }
+        inschrijvingRepository.saveAll(inschrijvingen)
+        inschrijvingen.forEach {
+            it.leerling.inschrijvingen.add(it)
+            g.school.inschrijvingen.add(it)
+        }
+        leerlingen.forEach {
+            genererenScores(it)
+        }
+
         return groepLeerlingen
     }
 
     private fun koppelLeerlingAanVoorgaandeGroepen(laatsteGroep: Groep, leerling: Leerling) {
-        laatsteGroep.school.groepen
+        val groepLeerlingen: Sequence<GroepLeerling> = laatsteGroep.school.groepen
                 .asSequence()
                 .filter { groep -> groep.niveau < laatsteGroep.niveau }
                 .map { groep ->
@@ -191,8 +214,11 @@ class TestdataGenerator : CommandLineRunner {
                             leerling = leerling
                     )
                 }
+
+        groepLeerlingRepository.saveAll(groepLeerlingen.asIterable())
+
+        groepLeerlingen
                 .forEach { gl ->
-                    groepLeerlingRepository.save(gl)
                     gl.groep.groepLeerlingen.add(gl)
                 }
     }
@@ -212,22 +238,19 @@ class TestdataGenerator : CommandLineRunner {
                 voornamen = if (geslachtVoorNaam === Geslacht.VROUW) randomVoornamen(roepnaam, meisjesnamen) else randomVoornamen(roepnaam, jongensnamen),
                 tussenvoegsel = if (kans(0.2)) random(tussenvoegsels) else null
         )
-        leerlingRepository.save(l)
-        genererenInschrijving(l, groep.school, groep)
-        genererenScores(l)
         // TODO uitgeschreven leerlingen
         return l
     }
 
     private fun genererenScores(leerling: Leerling) {
-        toetsafnames.forEach { toetsafname ->
-            val score = Score(
+        val scores = toetsafnames.map { toetsafname ->
+            Score(
                     leerling = leerling,
                     toetsafname = toetsafname,
                     cijferScore = genererenScore(toetsafname.toets.soortScore)
             )
-            scoreRepository.save(score)
         }
+        scoreRepository.saveAll(scores)
     }
 
     private fun genererenScore(soortScore: SoortScore): BigDecimal? {
@@ -266,15 +289,12 @@ class TestdataGenerator : CommandLineRunner {
         }
     }
 
-    private fun genererenInschrijving(leerling: Leerling, school: School, laatsteGroep: Groep) {
+    private fun genererenInschrijving(leerling: Leerling, school: School, laatsteGroep: Groep): Inschrijving {
         val datum = DateUtils.addYears(datumBeginSchooljaar, 1 - laatsteGroep.niveau)
-        val i = Inschrijving(
+        return Inschrijving(
                 datumInschrijving = datum,
                 leerling = leerling,
                 school = school)
-        inschrijvingRepository.save(i)
-        leerling.inschrijvingen.add(i)
-        school.inschrijvingen.add(i)
     }
 
     private fun koppelenMedewerkerAanSchool(medewerker: Medewerker, school: School) {
@@ -309,10 +329,72 @@ class TestdataGenerator : CommandLineRunner {
         return m
     }
 
+    private fun randomOuder(geslacht: Geslacht, leerling: Leerling) = Ouder(
+            voornaam = random(if (geslacht == Geslacht.MAN) jongensnamen else meisjesnamen),
+            tussenvoegsel = leerling.tussenvoegsel,
+            achternaam = leerling.achternaam,
+            geboortedatum = randomGeboortedatumOuder(),
+            geslacht = geslacht,
+            adres = leerling.adres)
+
+    private fun genererenOuders() {
+        log.info { "${Date()} Genereren ouders" }
+        val vaders = hashMapOf<Leerling, Ouder>()
+        val moeders = hashMapOf<Leerling, Ouder>()
+        val leerlingen = leerlingRepository.findAll()
+        leerlingen.filter { kans(0.5) }
+                .forEach { leerling: Leerling ->
+                    val vader = randomOuder(Geslacht.MAN, leerling)
+                    val moeder = randomOuder(Geslacht.VROUW, leerling)
+                    vaders[leerling] = vader
+                    moeders[leerling] = moeder
+                }
+        var leerlingenMetOuders = vaders.keys.toList()
+        leerlingen.filter { !vaders.containsKey(it) && !moeders.containsKey(it) }
+                .filter { kans(0.5) }
+                .forEach { leerling ->
+                    val sibling = leerlingenMetOuders[randomInt(0, leerlingenMetOuders.size - 1)]
+                    vaders[leerling] = vaders[sibling]!!
+                    moeders[leerling] = moeders[sibling]!!
+                }
+        leerlingenMetOuders = vaders.keys.toList()
+        leerlingen.filter { !vaders.containsKey(it) && !moeders.containsKey(it) }
+                .filter { kans(0.5) }
+                .forEach { leerling ->
+                    val vader = randomOuder(Geslacht.MAN, leerling)
+                    vaders[leerling] = vader
+                }
+        leerlingenMetOuders = vaders.keys.toList()
+        leerlingen.filter { !vaders.containsKey(it) && !moeders.containsKey(it) }
+                .forEach { leerling ->
+                    val moeder = randomOuder(Geslacht.VROUW, leerling)
+                    moeders[leerling] = moeder
+                }
+
+        ouderRepository.saveAll(vaders.values)
+        ouderRepository.saveAll(moeders.values)
+        ouderLeerlingRepository.saveAll(moeders.map { entry ->
+            OuderLeerling(ouder = entry.value, leerling = entry.key)
+        })
+        ouderLeerlingRepository.saveAll(vaders.map { entry ->
+            OuderLeerling(ouder = entry.value, leerling = entry.key)
+        })
+        log.info { "${Date()} Ouders gegenereerd" }
+    }
+
     private fun randomGeboortedatum(niveau: Int): Date {
         return DateUtils.addDays(
                 DateUtils.addMonths(
                         DateUtils.addYears(Date(), -3 - niveau),
+                        -randomInt(0, 10)),
+                -randomInt(0, 27)
+        )
+    }
+
+    private fun randomGeboortedatumOuder(): Date {
+        return DateUtils.addDays(
+                DateUtils.addMonths(
+                        DateUtils.addYears(Date(), -randomInt(20, 40)),
                         -randomInt(0, 10)),
                 -randomInt(0, 27)
         )
@@ -409,6 +491,8 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun truncateTables() {
+        ouderLeerlingRepository.deleteAllInBatch()
+        ouderRepository.deleteAllInBatch()
         notitieRepository.deleteAllInBatch()
         scoreRepository.deleteAllInBatch()
         toetsafnameRepository.deleteAllInBatch()
