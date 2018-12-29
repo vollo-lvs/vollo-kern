@@ -38,4 +38,10 @@
         </addColumn>
         <addNotNullConstraint tableName="notities" columnName="notitie_niveau"/>
     </changeSet>
+    <changeSet author="danny" id="1.0.0-5">
+        <addColumn tableName="ouders">
+            <column name="telefoon" type="VARCHAR(15)"/>
+            <column name="email" type="VARCHAR(80)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

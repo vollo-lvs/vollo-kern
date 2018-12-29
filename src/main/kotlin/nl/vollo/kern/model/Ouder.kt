@@ -3,6 +3,7 @@ package nl.vollo.kern.model;
 import nl.vollo.kern.model.enums.Geslacht
 import java.util.*
 import javax.persistence.*
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull
 
 @Entity
@@ -39,7 +40,14 @@ class Ouder(
         val geslacht: Geslacht? = null,
 
         @Embedded
-        val adres: Adres? = null
+        val adres: Adres? = null,
+
+        @Column
+        val telefoon: String? = null,
+
+        @Column
+        @Email
+        val email: String? = null
 
 ) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.OUDER

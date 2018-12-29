@@ -329,13 +329,18 @@ class TestdataGenerator : CommandLineRunner {
         return m
     }
 
-    private fun randomOuder(geslacht: Geslacht, leerling: Leerling) = Ouder(
-            voornaam = random(if (geslacht == Geslacht.MAN) jongensnamen else meisjesnamen),
-            tussenvoegsel = leerling.tussenvoegsel,
-            achternaam = leerling.achternaam,
-            geboortedatum = randomGeboortedatumOuder(),
-            geslacht = geslacht,
-            adres = leerling.adres)
+    private fun randomOuder(geslacht: Geslacht, leerling: Leerling): Ouder {
+        val voornaam = random(if (geslacht == Geslacht.MAN) jongensnamen else meisjesnamen)
+        return Ouder(
+                voornaam = voornaam,
+                tussenvoegsel = leerling.tussenvoegsel,
+                achternaam = leerling.achternaam,
+                geboortedatum = randomGeboortedatumOuder(),
+                geslacht = geslacht,
+                adres = leerling.adres,
+                telefoon = randomTelefoon(),
+                email = randomEmail(voornaam))
+    }
 
     private fun genererenOuders() {
         log.info { "${Date()} Genereren ouders" }
@@ -381,6 +386,11 @@ class TestdataGenerator : CommandLineRunner {
         })
         log.info { "${Date()} Ouders gegenereerd" }
     }
+
+    private fun randomEmail(voornaam: String): String =
+            "${voornaam.toLowerCase()}${randomNumeric(3)}@dummy.local"
+
+    private fun randomTelefoon(): String = "0${randomInt(1, 9)}${randomNumeric(8)}"
 
     private fun randomGeboortedatum(niveau: Int): Date {
         return DateUtils.addDays(
@@ -451,6 +461,11 @@ class TestdataGenerator : CommandLineRunner {
     private fun randomLowercase(): Char {
         return randomInt(97, 122).toChar()
     }
+
+    private fun randomNumeric(lengte: Int): String =
+        IntRange(1, lengte).map {
+            randomInt(0, 9)
+        }.joinToString("")
 
     private fun randomInt(vanaf: Int, totEnMet: Int): Int {
         return random.nextInt(totEnMet - vanaf) + vanaf
