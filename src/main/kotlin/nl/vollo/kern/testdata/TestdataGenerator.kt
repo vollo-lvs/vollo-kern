@@ -243,7 +243,9 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun genererenScores(leerling: Leerling) {
-        val scores = toetsafnames.map { toetsafname ->
+        val scores = toetsafnames.filter { toetsafname ->
+            toetsafname.datum!!.after(leerling.inschrijvingen[0].datumInschrijving)
+        }.map { toetsafname ->
             Score(
                     leerling = leerling,
                     toetsafname = toetsafname,
@@ -277,16 +279,19 @@ class TestdataGenerator : CommandLineRunner {
                 soort = soort
         )
         toetsRepository.save(toets)
-        return IntRange(1, randomInt(1, 5)).map {
-            val toetsafname = Toetsafname(
-                    toets = toets,
-                    datum = DateUtils.addDays(
-                            DateUtils.addMonths(datumBeginSchooljaar, randomInt(1, 6)),
-                            randomInt(1, 27))
-            )
-            toetsafnameRepository.save(toetsafname)
-            toetsafname
-        }
+        val toetsafnames = IntRange(-7, 0).map { jaar ->
+            IntRange(1, randomInt(1, 5)).map {
+                val toetsafname = Toetsafname(
+                        toets = toets,
+                        datum = DateUtils.addYears(
+                                DateUtils.addDays(
+                                DateUtils.addMonths(datumBeginSchooljaar, randomInt(0, 11)),
+                                randomInt(1, 27)), jaar)
+                )
+                toetsafname
+            }
+        }.flatten()
+        return toetsafnameRepository.saveAll(toetsafnames)
     }
 
     private fun genererenInschrijving(leerling: Leerling, school: School, laatsteGroep: Groep): Inschrijving {
