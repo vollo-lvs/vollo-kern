@@ -1,7 +1,6 @@
 package nl.vollo.kern.api
 
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
 import mu.KotlinLogging
 import nl.vollo.events.EventService
 import nl.vollo.events.kern.LeerlingOpgehaald
@@ -9,19 +8,14 @@ import nl.vollo.kern.model.Groep
 import nl.vollo.kern.model.Leerling
 import nl.vollo.kern.model.Ouder
 import nl.vollo.kern.model.Score
-import nl.vollo.kern.model.enums.Geslacht
 import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
 import nl.vollo.kern.repository.OuderRepository
 import nl.vollo.kern.repository.ScoreRepository
-import org.apache.commons.lang3.RandomStringUtils.randomAlphabetic
-import org.apache.commons.lang3.RandomUtils
-import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 private val log = KotlinLogging.logger {}
 
@@ -47,26 +41,6 @@ class LeerlingCtl {
 
     @GetMapping(produces = ["application/json"])
     fun listAll(): List<Leerling> = leerlingRepository.findAll()
-
-    @ApiOperation(value = "Maak en retourneer een voorbeeldleerling met willekeurig data.")
-    @GetMapping(value = ["/sample"], produces = ["application/json"])
-    fun sampleLeerling(): ResponseEntity<Leerling> {
-        var leerling = Leerling(
-                achternaam = randomAlphabetic(40),
-                voornamen = randomAlphabetic(40),
-                roepnaam = randomAlphabetic(20),
-                geboortedatum = DateUtils.addDays(Date(), -RandomUtils.nextInt(365 * 6, 365 * 12)),
-                geslacht = if (Math.random() > .67)
-                    Geslacht.MAN
-                else if (Math.random() > .5)
-                    Geslacht.VROUW
-                else
-                    Geslacht.OVERIG
-        )
-        leerling = leerlingRepository.save(leerling)
-        log.info { "Leerling aangemaakt: $leerling" }
-        return ResponseEntity(leerling, HttpStatus.OK)
-    }
 
     @PostMapping(consumes = ["application/json"])
     fun create(entity: Leerling): ResponseEntity<Leerling> {

@@ -1,6 +1,6 @@
 package nl.vollo.kern.model;
 
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -25,8 +25,7 @@ class Toetsafname(
         val toets: Toets,
 
         @Column(name = "datum")
-        @Temporal(TemporalType.DATE)
-        val datum: Date? = null
+        val datum: LocalDate? = null
 
 ) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.TOETSAFNAME

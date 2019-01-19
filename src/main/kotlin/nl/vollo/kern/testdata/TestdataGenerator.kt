@@ -7,13 +7,14 @@ import nl.vollo.kern.model.enums.SoortScore
 import nl.vollo.kern.repository.*
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
+import java.time.Month
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -41,6 +42,8 @@ class TestdataGenerator : CommandLineRunner {
     private lateinit var tussenvoegsels: List<String>
 
     private lateinit var toetsafnames: List<Toetsafname>
+
+    var medewerkerSequence = 0
 
     @PersistenceContext
     lateinit var em: EntityManager
@@ -130,8 +133,7 @@ class TestdataGenerator : CommandLineRunner {
             val school = genererenSchool(hoortBij)
             if (hoortBij == null) {
                 log.info { "Bijbehorende scholen ${school.bijbehorendeScholen}" }
-                val medewerker = genererenMedewerker(i)
-                koppelenMedewerkerAanSchool(medewerker, school)
+                koppelenMedewerkersAanSchool(school)
             }
         }
     }
@@ -205,8 +207,8 @@ class TestdataGenerator : CommandLineRunner {
                 .asSequence()
                 .filter { groep -> groep.niveau < laatsteGroep.niveau }
                 .map { groep ->
-                    val datumBegin = DateUtils.addYears(datumBeginSchooljaar, groep.niveau - laatsteGroep.niveau)
-                    val datumEinde = DateUtils.addDays(DateUtils.addYears(datumBegin, 1), -1)
+                    val datumBegin = datumBeginSchooljaar.plusYears((groep.niveau - laatsteGroep.niveau).toLong())
+                    val datumEinde = datumBegin.plusYears(1).minusDays(1)
                     GroepLeerling(
                             groep = groep,
                             datumBegin = datumBegin,
@@ -244,7 +246,7 @@ class TestdataGenerator : CommandLineRunner {
 
     private fun genererenScores(leerling: Leerling) {
         val scores = toetsafnames.filter { toetsafname ->
-            toetsafname.datum!!.after(leerling.inschrijvingen[0].datumInschrijving)
+            toetsafname.datum!!.isAfter(leerling.inschrijvingen[0].datumInschrijving)
         }.map { toetsafname ->
             Score(
                     leerling = leerling,
@@ -283,10 +285,10 @@ class TestdataGenerator : CommandLineRunner {
             IntRange(1, randomInt(1, 5)).map {
                 val toetsafname = Toetsafname(
                         toets = toets,
-                        datum = DateUtils.addYears(
-                                DateUtils.addDays(
-                                DateUtils.addMonths(datumBeginSchooljaar, randomInt(0, 11)),
-                                randomInt(1, 27)), jaar)
+                        datum = datumBeginSchooljaar
+                                .plusDays(randomLong(0, 27))
+                                .plusMonths(randomLong(0, 11))
+                                .withYear(jaar)
                 )
                 toetsafname
             }
@@ -295,7 +297,7 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun genererenInschrijving(leerling: Leerling, school: School, laatsteGroep: Groep): Inschrijving {
-        val datum = DateUtils.addYears(datumBeginSchooljaar, 1 - laatsteGroep.niveau)
+        val datum = datumBeginSchooljaar.plusYears(1L - laatsteGroep.niveau)
         return Inschrijving(
                 datumInschrijving = datum,
                 leerling = leerling,
@@ -303,7 +305,7 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun koppelenMedewerkerAanSchool(medewerker: Medewerker, school: School) {
-        val d = Date(0L)
+        val d = LocalDate.MIN
         school.groepen.asSequence()
                 .map {
                     GroepMedewerker(
@@ -318,7 +320,25 @@ class TestdataGenerator : CommandLineRunner {
         school.bijbehorendeScholen.forEach { s -> koppelenMedewerkerAanSchool(medewerker, s) }
     }
 
-    private fun genererenMedewerker(i: Int): Medewerker {
+    private fun koppelenMedewerkersAanSchool(school: School) {
+        log.info { "Koppel medewerkers aan school ${school.naam}" }
+        val d = LocalDate.MIN
+        val groepMedewerkers = IntRange(1, 4)
+                .map { it * 2 }
+                .flatMap { medewerkerGroepNiveau ->
+                    val medewerker = genererenMedewerker()
+                    school.groepen
+                            .filter { it.niveau <= medewerkerGroepNiveau }
+                            .map {
+                                GroepMedewerker(groep = it, medewerker = medewerker, datumBegin = d)
+                            }
+                }
+        groepMedewerkerRepository.saveAll(groepMedewerkers)
+        school.bijbehorendeScholen.forEach(this::koppelenMedewerkersAanSchool)
+    }
+
+    private fun genererenMedewerker(): Medewerker {
+        val i = ++medewerkerSequence
         val m = Medewerker(
                 voornaam = random(if (kans(0.5)) jongensnamen else meisjesnamen),
                 tussenvoegsel = if (kans(0.2)) random(tussenvoegsels) else null,
@@ -397,22 +417,16 @@ class TestdataGenerator : CommandLineRunner {
 
     private fun randomTelefoon(): String = "0${randomInt(1, 9)}${randomNumeric(8)}"
 
-    private fun randomGeboortedatum(niveau: Int): Date {
-        return DateUtils.addDays(
-                DateUtils.addMonths(
-                        DateUtils.addYears(Date(), -3 - niveau),
-                        -randomInt(0, 10)),
-                -randomInt(0, 27)
-        )
+    private fun randomGeboortedatum(niveau: Int): LocalDate {
+        return LocalDate.now().plusYears(-3L - niveau)
+                .minusMonths(randomLong(0, 10))
+                .minusDays(randomLong(0, 27))
     }
 
-    private fun randomGeboortedatumOuder(): Date {
-        return DateUtils.addDays(
-                DateUtils.addMonths(
-                        DateUtils.addYears(Date(), -randomInt(20, 40)),
-                        -randomInt(0, 10)),
-                -randomInt(0, 27)
-        )
+    private fun randomGeboortedatumOuder(): LocalDate {
+        return LocalDate.now().minusYears(randomLong(20, 40))
+                .minusMonths(randomLong(0, 10))
+                .minusDays(randomLong(0, 27))
     }
 
     private fun randomVoornamen(roepnaam: String, namen: List<String>): String {
@@ -476,6 +490,10 @@ class TestdataGenerator : CommandLineRunner {
         return random.nextInt(totEnMet - vanaf) + vanaf
     }
 
+    private fun randomLong(vanaf: Int, totEnMet: Int): Long {
+        return randomInt(vanaf, totEnMet).toLong()
+    }
+
     private fun random(items: List<String>): String {
         return items[random.nextInt(items.size)]
     }
@@ -500,14 +518,11 @@ class TestdataGenerator : CommandLineRunner {
         }
     }
 
-    private fun calcBeginSchooljaar(): Date {
-        var d = DateUtils.setDays(
-                DateUtils.setMonths(Date(), Calendar.SEPTEMBER),
-                1)
-        if (d.after(Date())) {
-            d = DateUtils.addYears(d, -1)
-        }
-        return d
+    private fun calcBeginSchooljaar(): LocalDate {
+        return LocalDate.now()
+                .withMonth(Month.SEPTEMBER.value)
+                .withDayOfMonth(1)
+                .minusYears(if (LocalDate.now().monthValue < 9) 1 else 0)
     }
 
     private fun truncateTables() {

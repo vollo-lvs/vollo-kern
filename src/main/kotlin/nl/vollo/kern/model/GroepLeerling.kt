@@ -1,6 +1,6 @@
 package nl.vollo.kern.model;
 
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -26,12 +26,10 @@ class GroepLeerling(
         val leerling: Leerling,
 
         @Column(name = "datum_begin", nullable = false)
-        @Temporal(TemporalType.DATE)
-        val datumBegin: Date,
+        val datumBegin: LocalDate,
 
         @Column(name = "datum_einde")
-        @Temporal(TemporalType.DATE)
-        val datumEinde: Date? = null
+        val datumEinde: LocalDate? = null
 
 ) : DomainObject() {
     override val _type: DomainEntity get() = DomainEntity.GROEP_LEERLING

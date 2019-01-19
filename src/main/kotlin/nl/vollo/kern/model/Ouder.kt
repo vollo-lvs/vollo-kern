@@ -1,7 +1,7 @@
 package nl.vollo.kern.model;
 
 import nl.vollo.kern.model.enums.Geslacht
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull
@@ -32,9 +32,8 @@ class Ouder(
         val achternaam: String,
 
         @Column(nullable = false)
-        @Temporal(TemporalType.DATE)
         @NotNull
-        val geboortedatum: Date,
+        val geboortedatum: LocalDate,
 
         @Enumerated(EnumType.STRING)
         val geslacht: Geslacht? = null,

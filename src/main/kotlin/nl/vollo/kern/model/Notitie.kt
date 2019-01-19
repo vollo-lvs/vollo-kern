@@ -1,7 +1,7 @@
 package nl.vollo.kern.model
 
 import nl.vollo.kern.model.enums.NotitieNiveau
-import java.util.*
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
@@ -24,8 +24,7 @@ class Notitie(
 
         @Column(nullable = false)
         @NotNull
-        @Temporal(TemporalType.TIMESTAMP)
-        var datum: Date? = null,
+        var datum: LocalDateTime? = null,
 
         @Column(name = "notitie_niveau", nullable = false)
         @NotNull

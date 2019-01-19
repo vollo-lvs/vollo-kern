@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 import java.util.*
 
 private val log = KotlinLogging.logger {}
@@ -55,7 +56,7 @@ class NotitieCtl {
                 .map { leerling ->
                     notitie.leerling = leerling
                     notitie.medewerker = gebruiker.medewerker
-                    notitie.datum = Date()
+                    notitie.datum = LocalDateTime.now()
                     val saved = notitieRepository.save(notitie)
                     ResponseEntity.ok(saved)
                 }

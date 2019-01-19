@@ -2,6 +2,7 @@ package nl.vollo.kern.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import nl.vollo.kern.model.enums.Geslacht
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -32,8 +33,7 @@ class Leerling(
         var achternaam: String,
 
         @Column(nullable = false)
-        @Temporal(TemporalType.DATE)
-        var geboortedatum: Date,
+        var geboortedatum: LocalDate,
 
         @Enumerated(EnumType.STRING)
         var geslacht: Geslacht? = null,

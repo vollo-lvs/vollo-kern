@@ -5,13 +5,18 @@ POST {{base}}/public/testdata
 POST {{base}}/public/inloggen
 Content-Type: application/json
 
-{"gebruikersnaam":"m0","wachtwoord":"m0"}
+{"gebruikersnaam":"m4","wachtwoord":"m4"}
 
 > {%
     client.global.set("token", response.headers.valueOf("Set-Cookie"));
 %}
+
 ###
 GET {{base}}/mijn-groepen
+Cookie: {{token}}
+
+###
+GET {{base}}/score
 Cookie: {{token}}
 
 ###

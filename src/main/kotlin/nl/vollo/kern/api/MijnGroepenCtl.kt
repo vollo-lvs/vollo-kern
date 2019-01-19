@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 import java.util.*
 
 @Api(value = "MijnGroepen")
@@ -31,7 +32,7 @@ class MijnGroepenCtl {
     @GetMapping(produces = ["application/json"])
     @PreAuthorize("hasRole('GEBRUIKER')")
     fun getMijnGroepen(@AuthenticationPrincipal gebruiker: Gebruiker): List<Groep> {
-        return groepRepository.findByMedewerker(gebruiker.medewerker!!, Date())
+        return groepRepository.findByMedewerker(gebruiker.medewerker!!, LocalDate.now())
     }
 
     @ApiOperation(value = "Haal de leerlingen van een groep van de ingelogde medewerker op.")
@@ -39,7 +40,7 @@ class MijnGroepenCtl {
     @PreAuthorize("hasRole('GEBRUIKER')")
     fun getGroepLeerlingen(@ApiParam("ID van een groep") @PathVariable("id") id: Long): GroepView {
         val groepView = GroepView()
-        groepRepository.getGroepLeerlingen(id, Date()).forEach { leerling ->
+        groepRepository.getGroepLeerlingen(id, LocalDate.now()).forEach { leerling ->
             val scores = scoreRepository.findAllByLeerling(leerling)
             groepView.addLeerling(leerling, scores)
         }

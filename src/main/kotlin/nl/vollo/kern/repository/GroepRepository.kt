@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.time.LocalDate
 
 @Repository
 interface GroepRepository : JpaRepository<Groep, Long> {
@@ -22,7 +22,7 @@ interface GroepRepository : JpaRepository<Groep, Long> {
             "order by l.achternaam, l.roepnaam")
     fun getGroepLeerlingen(
             @Param("groepId") id: Long?,
-            @Param("peildatum") peildatum: Date): List<Leerling>
+            @Param("peildatum") peildatum: LocalDate): List<Leerling>
 
     @Query("select g from Groep g "
             + "where g in ( "
@@ -33,7 +33,7 @@ interface GroepRepository : JpaRepository<Groep, Long> {
             + ")")
     fun findByMedewerker(
             @Param("medewerker") medewerker: Medewerker,
-            @Param("peildatum") peildatum: Date): List<Groep>
+            @Param("peildatum") peildatum: LocalDate): List<Groep>
 
     @Query("select g from Groep g "
             + "where g in ( "

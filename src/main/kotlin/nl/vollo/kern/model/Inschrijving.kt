@@ -1,6 +1,6 @@
 package nl.vollo.kern.model;
 
-import java.util.*
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -22,12 +22,10 @@ class Inschrijving(
         val leerling: Leerling,
 
         @Column(name = "datum_inschrijving", nullable = false)
-        @Temporal(TemporalType.DATE)
-        val datumInschrijving: Date,
+        val datumInschrijving: LocalDate,
 
         @Column(name = "datum_uitschrijving")
-        @Temporal(TemporalType.DATE)
-        val datumUitschrijving: Date? = null,
+        val datumUitschrijving: LocalDate? = null,
 
         @ManyToOne(targetEntity = School::class)
         @JoinColumn(name = "school_id", foreignKey = ForeignKey(name = "ins_scl_fk"), nullable = false)
