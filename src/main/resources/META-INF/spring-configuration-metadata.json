@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "name": "vollo.kern",
+      "type": "nl.vollo.kern.VolloConfig",
+      "sourceType": "nl.vollo.kern.VolloConfig"
+    },
+    {
+      "name": "vollo.kern.jwt",
+      "type": "nl.vollo.kern.VolloConfig$Jwt",
+      "sourceType": "nl.vollo.kern.VolloConfig",
+      "sourceMethod": "getJwt()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "vollo.kern.jwt.issuer",
+      "type": "java.lang.String",
+      "sourceType": "nl.vollo.kern.VolloConfig$Jwt"
+    },
+    {
+      "name": "vollo.kern.jwt.expiration",
+      "type": "java.time.Duration",
+      "sourceType": "nl.vollo.kern.VolloConfig$Jwt"
+    },
+    {
+      "name": "vollo.kern.jwt.clockSkew",
+      "type": "java.time.Duration",
+      "sourceType": "nl.vollo.kern.VolloConfig$Jwt"
+    },
+    {
+      "name": "vollo.kern.jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "nl.vollo.kern.VolloConfig$Jwt"
+    }
+  ],
+  "hints": []
+}
