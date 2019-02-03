@@ -44,4 +44,18 @@
             <column name="email" type="VARCHAR(80)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="danny" id="1.0.0-6">
+        <addColumn tableName="leerlingen">
+            <column name="longitude" type="double"/>
+            <column name="latitude" type="double"/>
+        </addColumn>
+        <addColumn tableName="ouders">
+            <column name="longitude" type="double"/>
+            <column name="latitude" type="double"/>
+        </addColumn>
+        <addColumn tableName="scholen">
+            <column name="longitude" type="double"/>
+            <column name="latitude" type="double"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

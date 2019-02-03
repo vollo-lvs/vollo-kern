@@ -1,6 +1,9 @@
 package nl.vollo.kern.testdata
 
 import mu.KotlinLogging
+import nl.vollo.events.EventService
+import nl.vollo.events.bag.RandomAdressenOpgehaald
+import nl.vollo.events.kern.OphalenRandomAdressen
 import nl.vollo.kern.model.*
 import nl.vollo.kern.model.enums.Geslacht
 import nl.vollo.kern.model.enums.SoortScore
@@ -9,6 +12,7 @@ import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
+import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.math.BigDecimal
@@ -16,6 +20,7 @@ import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.Month
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.persistence.PersistenceException
@@ -40,8 +45,8 @@ class TestdataGenerator : CommandLineRunner {
     private lateinit var meisjesnamen: List<String>
     private lateinit var jongensnamen: List<String>
     private lateinit var tussenvoegsels: List<String>
-
     private lateinit var toetsafnames: List<Toetsafname>
+    private lateinit var adressen: List<Adres>
 
     var medewerkerSequence = 0
 
@@ -90,6 +95,9 @@ class TestdataGenerator : CommandLineRunner {
     @Autowired
     lateinit var ouderLeerlingRepository: OuderLeerlingRepository
 
+    @Autowired
+    lateinit var eventService: EventService
+
     @Throws(Exception::class)
     override fun run(vararg args: String) {
         if (ArrayUtils.contains(args, "--genereer-testdata")) {
@@ -104,28 +112,30 @@ class TestdataGenerator : CommandLineRunner {
             aantalLeerlingenMin: Int = 15,
             aantalLeerlingenMax: Int = 32
     ) {
-        this.aantalScholen = aantalScholen
-        this.aantalGroepen = aantalGroepen
-        this.aantalLeerlingenMin = aantalLeerlingenMin
-        this.aantalLeerlingenMax = aantalLeerlingenMax
-        try {
-            // TODO betere oplossing voor deze hack
-            em.createNativeQuery("alter sequence vollo_seq restart").resultList
-        } catch (e: PersistenceException) {
-        }
+        ophalenRandomAdressen().thenApply {
+            this.aantalScholen = aantalScholen
+            this.aantalGroepen = aantalGroepen
+            this.aantalLeerlingenMin = aantalLeerlingenMin
+            this.aantalLeerlingenMax = aantalLeerlingenMax
+            try {
+                // TODO betere oplossing voor deze hack
+                em.createNativeQuery("alter sequence vollo_seq restart").resultList
+            } catch (e: PersistenceException) {
+            }
 
-        truncateTables()
-        random = Random(1L)
-        genererenToetsen()
-        schoolnamen = inlezenTestdata("schoolnamen")
-        straatnamen = inlezenTestdata("straatnamen")
-        plaatsnamen = inlezenTestdata("plaatsnamen")
-        achternamen = inlezenTestdata("achternamen")
-        meisjesnamen = inlezenTestdata("meisjesnamen")
-        jongensnamen = inlezenTestdata("jongensnamen")
-        tussenvoegsels = inlezenTestdata("tussenvoegsels")
-        genererenScholen(null, aantalScholen)
-        genererenOuders()
+            truncateTables()
+            random = Random(1L)
+            genererenToetsen()
+            schoolnamen = inlezenTestdata("schoolnamen")
+            straatnamen = inlezenTestdata("straatnamen")
+            plaatsnamen = inlezenTestdata("plaatsnamen")
+            achternamen = inlezenTestdata("achternamen")
+            meisjesnamen = inlezenTestdata("meisjesnamen")
+            jongensnamen = inlezenTestdata("jongensnamen")
+            tussenvoegsels = inlezenTestdata("tussenvoegsels")
+            genererenScholen(null, aantalScholen)
+            genererenOuders()
+        }
     }
 
     private fun genererenScholen(hoortBij: School?, aantalScholen: Int) {
@@ -305,7 +315,7 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun koppelenMedewerkerAanSchool(medewerker: Medewerker, school: School) {
-        val d = LocalDate.MIN
+        val d = LocalDate.now().minusYears(10)
         school.groepen.asSequence()
                 .map {
                     GroepMedewerker(
@@ -322,7 +332,7 @@ class TestdataGenerator : CommandLineRunner {
 
     private fun koppelenMedewerkersAanSchool(school: School) {
         log.info { "Koppel medewerkers aan school ${school.naam}" }
-        val d = LocalDate.MIN
+        val d = LocalDate.now().minusYears(10)
         val groepMedewerkers = IntRange(1, 4)
                 .map { it * 2 }
                 .flatMap { medewerkerGroepNiveau ->
@@ -359,7 +369,7 @@ class TestdataGenerator : CommandLineRunner {
         return Ouder(
                 voornaam = voornaam,
                 tussenvoegsel = leerling.tussenvoegsel,
-                achternaam = leerling.achternaam,
+                achternaam = leerling.achternaam!!,
                 geboortedatum = randomGeboortedatumOuder(),
                 geslacht = geslacht,
                 adres = leerling.adres,
@@ -439,13 +449,19 @@ class TestdataGenerator : CommandLineRunner {
     }
 
     private fun randomAdres(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
+        return adressen.random()
+    }
+
+    private fun randomAdresOUD(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
         return Adres(
                 straat = random(straatnamen),
                 huisnummer = randomInt(1, 200).toString(),
                 toevoeging = if (kans(0.2)) randomToevoeging() else null,
                 postcode = randomPostcode(),
                 plaats = random(plaatsnamenSelectie),
-                land = "Nederland")
+                land = "Nederland",
+                longitude = null,
+                latitude = null)
     }
 
     private fun kans(k: Double): Boolean {
@@ -540,6 +556,35 @@ class TestdataGenerator : CommandLineRunner {
         leerlingRepository.deleteAllInBatch()
         groepRepository.deleteAllInBatch()
         schoolRepository.deleteAllInBatch()
+    }
+
+    private lateinit var ophalenRandomAdressenFuture: CompletableFuture<Void>
+    private lateinit var ophalenRandomAdressenEvent: OphalenRandomAdressen
+
+    private fun ophalenRandomAdressen(): CompletableFuture<Void> {
+        ophalenRandomAdressenFuture = CompletableFuture()
+        ophalenRandomAdressenEvent = OphalenRandomAdressen("Zwolle", 5000)
+        eventService.send(ophalenRandomAdressenEvent)
+        return ophalenRandomAdressenFuture
+    }
+
+    @KafkaListener(topics = [RandomAdressenOpgehaald.TOPIC])
+    fun onRandomAdressenOpgehaald(event: RandomAdressenOpgehaald) {
+        if (event.isRelatedTo(ophalenRandomAdressenEvent)) {
+            adressen = event.adressenCsv
+                    .split("\n")
+                    .map { line ->
+                        val fields = line.split("|")
+                        Adres(straat = fields[0],
+                                huisnummer = fields[1],
+                                toevoeging = fields[2],
+                                postcode = fields[3],
+                                plaats = fields[4],
+                                longitude = fields[5].toDouble(),
+                                latitude = fields[6].toDouble())
+                    }
+            ophalenRandomAdressenFuture.complete(null)
+        }
     }
 
 }

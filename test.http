@@ -20,12 +20,62 @@ GET {{base}}/score
 Cookie: {{token}}
 
 ###
-GET {{base}}/mijn-groepen/182/leerlingen
+GET {{base}}/mijn-groepen/6652/leerlingen
 Cookie: {{token}}
 
 ###
-GET {{base}}/leerling/5693
+GET {{base}}/leerling/6669
 Cookie: {{token}}
+
+###
+PUT {{base}}/leerling/6669
+Cookie: {{token}}
+Content-Type: application/json
+
+{
+  "id": 6669,
+  "version": 0,
+  "voornamen": "Quintus Zico Silvan",
+  "roepnaam": "Quintus",
+  "tussenvoegsel": null,
+  "achternaam": "Baalen",
+  "geboortedatum": "2008-10-02",
+  "geslacht": "MAN",
+  "adres": {
+    "straat": "Uitgeeststraat",
+    "huisnummer": "4",
+    "toevoeging": null,
+    "postcode": "8425YX",
+    "plaats": "Berlicum",
+    "land": "Nederland"
+  },
+  "foto": null,
+  "_type": "LEERLING"
+}
+
+###
+POST {{base}}/leerling
+Cookie: {{token}}
+Content-Type: application/json
+
+{
+  "voornamen": "QQQuintus Zico Silvan",
+  "roepnaam": "QQQuintus",
+  "tussenvoegsel": null,
+  "achternaam": "Baalen",
+  "geboortedatum": "2008-11-11",
+  "geslacht": "MAN",
+  "adres": {
+    "straat": "Uitgeeststraat",
+    "huisnummer": "8",
+    "toevoeging": null,
+    "postcode": "8425SL",
+    "plaats": "Berlicum",
+    "land": "Nederland"
+  },
+  "foto": null,
+  "_type": "LEERLING"
+}
 
 ###
 GET {{base}}/leerling/5693/historie

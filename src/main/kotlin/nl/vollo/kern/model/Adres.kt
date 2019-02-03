@@ -22,5 +22,11 @@ class Adres(
         val plaats: String?,
 
         @Column
-        val land: String? = "Nederland"
+        val land: String? = "Nederland",
+
+        @Column
+        val longitude: Double?,
+
+        @Column
+        val latitude: Double?
 ) : Serializable

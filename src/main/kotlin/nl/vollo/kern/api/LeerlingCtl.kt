@@ -3,11 +3,9 @@ package nl.vollo.kern.api
 import io.swagger.annotations.Api
 import mu.KotlinLogging
 import nl.vollo.events.EventService
+import nl.vollo.events.kern.AdresOpgeslagen
 import nl.vollo.events.kern.LeerlingOpgehaald
-import nl.vollo.kern.model.Groep
-import nl.vollo.kern.model.Leerling
-import nl.vollo.kern.model.Ouder
-import nl.vollo.kern.model.Score
+import nl.vollo.kern.model.*
 import nl.vollo.kern.repository.GroepRepository
 import nl.vollo.kern.repository.LeerlingRepository
 import nl.vollo.kern.repository.OuderRepository
@@ -43,8 +41,13 @@ class LeerlingCtl {
     fun listAll(): List<Leerling> = leerlingRepository.findAll()
 
     @PostMapping(consumes = ["application/json"])
-    fun create(entity: Leerling): ResponseEntity<Leerling> {
+    fun create(@RequestBody entity: Leerling): ResponseEntity<Leerling> {
         val saved = leerlingRepository.save(entity)
+        if (saved.adres != null) {
+            eventService.send(
+                    AdresOpgeslagen(saved.adres!!.postcode!!, saved.adres!!.huisnummer!!,
+                            DomainEntity.LEERLING.name, saved.id!!))
+        }
         return ResponseEntity(saved, HttpStatus.CREATED)
     }
 
@@ -84,14 +87,19 @@ class LeerlingCtl {
     }
 
     @PutMapping(value = ["/{id:[0-9][0-9]*}"], consumes = ["application/json"])
-    fun update(@PathVariable("id") id: Long, entity: Leerling): ResponseEntity<Any> {
+    fun update(@PathVariable("id") id: Long, @RequestBody entity: Leerling): ResponseEntity<Any> {
         if (id != entity.id) {
             return ResponseEntity(HttpStatus.CONFLICT)
         }
         return leerlingRepository
                 .findById(id)
                 .map {
-                    leerlingRepository.save(entity)
+                    val saved = leerlingRepository.save(entity)
+                    if (saved.adres != null) {
+                        eventService.send(
+                                AdresOpgeslagen(saved.adres!!.postcode!!, saved.adres!!.huisnummer!!,
+                                        DomainEntity.LEERLING.name, saved.id!!))
+                    }
                     ResponseEntity<Any>(HttpStatus.NO_CONTENT)
                 }
                 .orElse(ResponseEntity(HttpStatus.NOT_FOUND))

@@ -21,19 +21,19 @@ class Leerling(
         override val version: Int = 0,
 
         @Column(nullable = false)
-        var voornamen: String,
+        var voornamen: String? = null,
 
         @Column(nullable = false)
-        var roepnaam: String,
+        var roepnaam: String? = null,
 
         @Column
         var tussenvoegsel: String? = null,
 
         @Column(nullable = false)
-        var achternaam: String,
+        var achternaam: String? = null,
 
         @Column(nullable = false)
-        var geboortedatum: LocalDate,
+        var geboortedatum: LocalDate? = null,
 
         @Enumerated(EnumType.STRING)
         var geslacht: Geslacht? = null,
