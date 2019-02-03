@@ -17,4 +17,6 @@ class ScoreView(@JsonIgnore val score: Score) {
     val leerlingId get() = score.leerling.id
     val geslacht get() = score.leerling.geslacht
     val geboortedatum get() = score.leerling.geboortedatum
+    val latitude get() = score.leerling.adres?.latitude
+    val longitude get() = score.leerling.adres?.longitude
 }

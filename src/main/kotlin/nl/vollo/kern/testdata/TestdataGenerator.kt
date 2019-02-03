@@ -291,14 +291,14 @@ class TestdataGenerator : CommandLineRunner {
                 soort = soort
         )
         toetsRepository.save(toets)
-        val toetsafnames = IntRange(-7, 0).map { jaar ->
+        val toetsafnames = LongRange(-7, 0).map { jaar ->
             IntRange(1, randomInt(1, 5)).map {
                 val toetsafname = Toetsafname(
                         toets = toets,
                         datum = datumBeginSchooljaar
                                 .plusDays(randomLong(0, 27))
                                 .plusMonths(randomLong(0, 11))
-                                .withYear(jaar)
+                                .plusYears(jaar)
                 )
                 toetsafname
             }
