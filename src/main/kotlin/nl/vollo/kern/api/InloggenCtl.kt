@@ -48,7 +48,7 @@ class InloggenCtl {
                 }
                 .orElseGet {
                     response.addCookie(cookieService.verwijderCookie(request));
-                    ResponseEntity(errorHeader("Invalid login and/or password"), HttpStatus.UNAUTHORIZED);
+                    ResponseEntity(errorHeader("Onjuiste gebruikersnaam en/of wachtwoord"), HttpStatus.UNAUTHORIZED);
                 }
     }
 
