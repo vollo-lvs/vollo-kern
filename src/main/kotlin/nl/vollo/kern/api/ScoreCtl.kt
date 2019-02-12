@@ -3,7 +3,6 @@ package nl.vollo.kern.api;
 import io.swagger.annotations.Api
 import nl.vollo.kern.api.view.ScoreView
 import nl.vollo.kern.model.Gebruiker
-import nl.vollo.kern.repository.LeerlingRepository
 import nl.vollo.kern.repository.ScoreRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -19,9 +18,6 @@ import java.time.LocalDate
 @RequestMapping("/score")
 @PreAuthorize("hasRole('MEDEWERKER')")
 class ScoreCtl {
-
-    @Autowired
-    private lateinit var leerlingRepository: LeerlingRepository
 
     @Autowired
     private lateinit var scoreRepository: ScoreRepository
