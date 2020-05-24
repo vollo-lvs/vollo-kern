@@ -28,7 +28,7 @@ class ScoreCtl {
         val datumBegin = LocalDate.now()
                 .withMonth(9)
                 .withDayOfMonth(1)
-                .minusYears(if (LocalDate.now().monthValue < 9) 1 else 0)
+                .minusYears(if (LocalDate.now().monthValue < 9) 2 else 1)
         val datumEinde = datumBegin.plusYears(1).minusDays(1)
         return ResponseEntity.ok(
                 scoreRepository.findAllByMedewerkerIdInPeriode(gebruiker.medewerker!!, datumBegin, datumEinde)
