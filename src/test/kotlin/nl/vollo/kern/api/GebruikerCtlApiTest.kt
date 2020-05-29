@@ -6,6 +6,7 @@ import nl.vollo.kern.test.isTextNode
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.startsWith
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,10 +19,17 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EmbeddedKafka(
+    topics = ["nl.vollo.events.kern.LeerlingOpgehaald"],
+    brokerProperties = [
+        "listeners=PLAINTEXT://localhost:9092",
+        "port=9092"
+    ])
 internal class GebruikerCtlApiTest {
 
     @LocalServerPort
@@ -47,11 +55,11 @@ internal class GebruikerCtlApiTest {
 
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         val json = apiTestService.objectMapper.readTree(response.body)
-        assertThat(json["gebruikersnaam"], isTextNode("m0"))
-        assertThat(json["rollen"], isTextNode("ROLE_GEBRUIKER"))
+        assertThat(json["gebruikersnaam"], isTextNode("m1"))
+        assertThat(json["rollen"], isTextNode("ROLE_GEBRUIKER,ROLE_MEDEWERKER"))
         assertThat(json["_type"], isTextNode("GEBRUIKER"))
-        assertThat(json["medewerker"]["voornaam"], isTextNode("Gerharda"))
-        assertThat(json["medewerker"]["achternaam"], isTextNode("Hoef"))
+        assertThat(json["medewerker"]["voornaam"].isTextual, equalTo(true))
+        assertThat(json["medewerker"]["achternaam"].isTextual, equalTo(true))
         assertThat(json["medewerker"]["_type"], isTextNode("MEDEWERKER"))
     }
 

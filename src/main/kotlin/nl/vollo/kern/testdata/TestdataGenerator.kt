@@ -102,37 +102,38 @@ class TestdataGenerator : CommandLineRunner {
     override fun run(vararg args: String) {
         if (ArrayUtils.contains(args, "--genereer-testdata")) {
             log.info("Testdata genereren")
-            genereren()
+            genereren(eventsEnabled = true)
         }
     }
 
     fun genereren(
-            aantalScholen: Int = 3,
-            aantalGroepen: Int = 8,
-            aantalLeerlingenMin: Int = 15,
-            aantalLeerlingenMax: Int = 32
+        aantalScholen: Int = 3,
+        aantalGroepen: Int = 8,
+        aantalLeerlingenMin: Int = 15,
+        aantalLeerlingenMax: Int = 32,
+        eventsEnabled: Boolean
     ) {
-        ophalenRandomAdressen().thenApply {
+        random = Random(1L)
+        schoolnamen = inlezenTestdata("schoolnamen")
+        straatnamen = inlezenTestdata("straatnamen")
+        plaatsnamen = inlezenTestdata("plaatsnamen")
+        achternamen = inlezenTestdata("achternamen")
+        meisjesnamen = inlezenTestdata("meisjesnamen")
+        jongensnamen = inlezenTestdata("jongensnamen")
+        tussenvoegsels = inlezenTestdata("tussenvoegsels")
+        ophalenRandomAdressen(eventsEnabled).thenApply {
             this.aantalScholen = aantalScholen
             this.aantalGroepen = aantalGroepen
             this.aantalLeerlingenMin = aantalLeerlingenMin
             this.aantalLeerlingenMax = aantalLeerlingenMax
             try {
                 // TODO betere oplossing voor deze hack
-                em.createNativeQuery("alter sequence vollo_seq restart").resultList
+                em.createNativeQuery("alter sequence vollo_seq restart with 0").executeUpdate()
             } catch (e: PersistenceException) {
             }
 
             truncateTables()
-            random = Random(1L)
             genererenToetsen()
-            schoolnamen = inlezenTestdata("schoolnamen")
-            straatnamen = inlezenTestdata("straatnamen")
-            plaatsnamen = inlezenTestdata("plaatsnamen")
-            achternamen = inlezenTestdata("achternamen")
-            meisjesnamen = inlezenTestdata("meisjesnamen")
-            jongensnamen = inlezenTestdata("jongensnamen")
-            tussenvoegsels = inlezenTestdata("tussenvoegsels")
             genererenScholen(null, aantalScholen)
             genererenOuders()
         }
@@ -152,7 +153,7 @@ class TestdataGenerator : CommandLineRunner {
         val schoolPlaatsnamen = random(plaatsnamen, randomInt(1, 4))
         val s = School(
                 naam = random(schoolnamen),
-                adres = randomAdres(schoolPlaatsnamen),
+                adres = randomAdresUitBag(schoolPlaatsnamen),
                 hoortBij = hoortBij)
         schoolRepository.save(s)
         log.info { "Gegenereerd school ${s.id}" }
@@ -243,7 +244,7 @@ class TestdataGenerator : CommandLineRunner {
         val roepnaam = if (geslachtVoorNaam === Geslacht.VROUW) random(meisjesnamen) else random(jongensnamen)
         val l = Leerling(
                 achternaam = random(achternamen),
-                adres = randomAdres(schoolPlaatsnamen),
+                adres = randomAdresUitBag(schoolPlaatsnamen),
                 geboortedatum = randomGeboortedatum(groep.niveau),
                 geslacht = geslacht,
                 roepnaam = roepnaam,
@@ -448,11 +449,11 @@ class TestdataGenerator : CommandLineRunner {
         return s.toString()
     }
 
-    private fun randomAdres(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
+    private fun randomAdresUitBag(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
         return adressen.random()
     }
 
-    private fun randomAdresOUD(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
+    private fun randomAdres(plaatsnamenSelectie: List<String> = plaatsnamen): Adres {
         return Adres(
                 straat = random(straatnamen),
                 huisnummer = randomInt(1, 200).toString(),
@@ -561,10 +562,17 @@ class TestdataGenerator : CommandLineRunner {
     private lateinit var ophalenRandomAdressenFuture: CompletableFuture<Void>
     private lateinit var ophalenRandomAdressenEvent: OphalenRandomAdressen
 
-    private fun ophalenRandomAdressen(): CompletableFuture<Void> {
+    private fun ophalenRandomAdressen(eventsEnabled: Boolean): CompletableFuture<Void> {
         ophalenRandomAdressenFuture = CompletableFuture()
-        ophalenRandomAdressenEvent = OphalenRandomAdressen("Zwolle", 5000)
-        eventService.send(ophalenRandomAdressenEvent)
+        if (eventsEnabled) {
+            ophalenRandomAdressenEvent = OphalenRandomAdressen("Zwolle", 5000)
+            eventService.send(ophalenRandomAdressenEvent)
+        } else {
+            adressen = IntRange(1, 500).map {
+                randomAdres(plaatsnamen)
+            }
+            ophalenRandomAdressenFuture.complete(null)
+        }
         return ophalenRandomAdressenFuture
     }
 

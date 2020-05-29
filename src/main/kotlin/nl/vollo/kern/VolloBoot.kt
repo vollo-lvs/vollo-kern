@@ -19,7 +19,7 @@ class VolloBoot {
 
     @PostMapping("/public/testdata")
     fun genererenTestdata() {
-        testdataGenerator.genereren()
+        testdataGenerator.genereren(eventsEnabled = false)
     }
 
     companion object {

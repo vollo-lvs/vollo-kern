@@ -34,15 +34,16 @@ class ApiTestService {
     fun genererenTestdata() {
         println("apiTestService.genereren, port=$port")
         testdataGenerator.genereren(
-                aantalScholen = 1,
-                aantalGroepen = 1,
-                aantalLeerlingenMin = 3,
-                aantalLeerlingenMax = 5
+            aantalScholen = 1,
+            aantalGroepen = 1,
+            aantalLeerlingenMin = 3,
+            aantalLeerlingenMax = 5,
+            eventsEnabled = false
         )
     }
 
     fun inloggen(): HttpHeaders {
-        val inloggenRequest = InloggenCtl.InloggenRequest("m0", "m0")
+        val inloggenRequest = InloggenCtl.InloggenRequest("m1", "m1")
         val result: ResponseEntity<Void> = restTemplate.postForEntity(testUrl("/public/inloggen"), inloggenRequest)
         MatcherAssert.assertThat("Fout bij inloggen", result.statusCode, CoreMatchers.equalTo(HttpStatus.NO_CONTENT))
         val cookie: String? = result.headers.getFirst("Set-Cookie")

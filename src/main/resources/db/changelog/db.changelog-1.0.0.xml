@@ -27,16 +27,16 @@
         <addColumn tableName="notities">
             <column name="datum" type="timestamp"/>
         </addColumn>
-        <addNotNullConstraint tableName="notities" columnName="datum"/>
-        <addNotNullConstraint tableName="notities" columnName="tekst"/>
-        <addNotNullConstraint tableName="notities" columnName="medewerker_id"/>
-        <addNotNullConstraint tableName="notities" columnName="leerling_id"/>
+        <addNotNullConstraint tableName="notities" columnName="datum" columnDataType="timestamp"/>
+        <addNotNullConstraint tableName="notities" columnName="tekst" columnDataType="text"/>
+        <addNotNullConstraint tableName="notities" columnName="medewerker_id" columnDataType="bigint"/>
+        <addNotNullConstraint tableName="notities" columnName="leerling_id" columnDataType="bigint"/>
     </changeSet>
     <changeSet author="danny" id="1.0.0-4">
         <addColumn tableName="notities">
             <column name="notitie_niveau" type="VARCHAR(40)" defaultValue="PERSOONLIJK"/>
         </addColumn>
-        <addNotNullConstraint tableName="notities" columnName="notitie_niveau"/>
+        <addNotNullConstraint tableName="notities" columnName="notitie_niveau" columnDataType="varchar(40)"/>
     </changeSet>
     <changeSet author="danny" id="1.0.0-5">
         <addColumn tableName="ouders">
